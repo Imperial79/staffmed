@@ -1,4 +1,5 @@
 import 'package:apollo/screens/homeUI.dart';
+import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
 import 'package:apollo/utils/animated-indexed-stack.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/sdp.dart';
@@ -17,7 +18,7 @@ class _DashboardUIState extends State<DashboardUI> {
 
   List<Widget> screens = [
     HomeUI(),
-    HomeUI(),
+    UploadPresUI(),
     HomeUI(),
   ];
 

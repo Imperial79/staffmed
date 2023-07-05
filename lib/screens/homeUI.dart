@@ -1,3 +1,4 @@
+import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
@@ -148,7 +149,9 @@ class _HomeUIState extends State<HomeUI> {
           ),
           width10,
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              navPush(context, UploadPresUI());
+            },
             child: Text('Order now'),
           ),
         ],

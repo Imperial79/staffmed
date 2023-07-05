@@ -14,23 +14,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     systemColors();
     return MaterialApp(
-      title: 'Flutter Apollo',
+      title: 'Staffmed',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            elevation: 0,
-            backgroundColor: kButtonColor,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(7),
+          fontFamily: 'Poppins',
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              elevation: 0,
+              backgroundColor: kButtonColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(7),
+              ),
             ),
           ),
-        ),
-      ),
+          cardTheme: CardTheme(elevation: 0, color: kCardColor)),
       home: DashboardUI(),
     );
   }

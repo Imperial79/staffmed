@@ -2,6 +2,7 @@ import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 
 SizedBox get height5 => SizedBox(height: 5);
 SizedBox get height10 => SizedBox(height: 10);
@@ -22,6 +23,18 @@ navPush(BuildContext context, Widget screen) {
 navPushReplacement(BuildContext context, Widget screen) {
   return Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => screen));
+}
+
+Widget kBackButton(BuildContext context) {
+  return IconButton(
+    onPressed: () {
+      Navigator.pop(context);
+    },
+    icon: SvgPicture.asset(
+      'lib/assets/icons/back.svg',
+      height: sdp(context, 16),
+    ),
+  );
 }
 
 systemColors() {

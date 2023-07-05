@@ -23,15 +23,7 @@ class _RegisterUIState extends State<RegisterUI> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: SvgPicture.asset(
-                  'lib/assets/icons/back.svg',
-                  height: sdp(context, 16),
-                ),
-              ),
+              kBackButton(context),
               height20,
               Center(
                 child: SvgPicture.asset(

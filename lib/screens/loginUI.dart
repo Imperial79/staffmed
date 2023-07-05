@@ -23,15 +23,7 @@ class _LoginUIState extends State<LoginUI> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: SvgPicture.asset(
-                  'lib/assets/icons/back.svg',
-                  height: sdp(context, 16),
-                ),
-              ),
+              kBackButton(context),
               Center(
                 child: Image.asset('lib/assets/icons/doctors-discussion.png'),
               ),
