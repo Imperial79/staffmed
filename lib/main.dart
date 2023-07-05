@@ -1,4 +1,5 @@
 import 'package:apollo/screens/dashboardUI.dart';
+import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: DashboardUI(),
+      home: WelcomeUI(),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 
 SizedBox get height5 => SizedBox(height: 5);
 SizedBox get height10 => SizedBox(height: 10);
@@ -52,7 +53,7 @@ systemColors() {
       statusBarIconBrightness: Brightness.dark,
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
 }
@@ -95,6 +96,7 @@ Widget kTextField(
   TextInputType? keyboardType,
   String? prefixText,
   bool obscureText = false,
+  int? maxLength,
 }) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -125,7 +127,9 @@ Widget kTextField(
             ),
             obscureText: obscureText,
             keyboardType: keyboardType,
+            maxLength: maxLength,
             decoration: InputDecoration(
+              counterText: '',
               border: InputBorder.none,
               hintText: hintText,
               hintStyle: TextStyle(
@@ -136,6 +140,41 @@ Widget kTextField(
           ),
         ),
       ],
+    ),
+  );
+}
+
+Container fullScreenLoading(BuildContext context) {
+  return Container(
+    height: double.infinity,
+    width: double.infinity,
+    alignment: Alignment.center,
+    color: Colors.white.withOpacity(0.7),
+    child: Lottie.asset(
+      'lib/assets/icons/loading-animation.json',
+      height: sdp(context, 100),
+    ),
+  );
+}
+
+void ShowSnackBar(
+  BuildContext context, {
+  required String content,
+  bool? isDanger = false,
+}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor:
+          isDanger! ? const Color.fromARGB(255, 168, 28, 28) : primaryColor,
+      dismissDirection: DismissDirection.vertical,
+      content: Text(
+        content,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+          fontFamily: 'Poppins',
+        ),
+      ),
     ),
   );
 }
