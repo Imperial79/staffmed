@@ -1,3 +1,4 @@
+import 'package:apollo/screens/dashboardUI.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _ConfirmPrescriptionUIState extends State<ConfirmPrescriptionUI> {
       appBar: AppBar(
         leading: kBackButton(context),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
           children: [
@@ -32,8 +33,25 @@ class _ConfirmPrescriptionUIState extends State<ConfirmPrescriptionUI> {
             Text(
               'A pharmacist will call you to confirm the medicines you need',
             ),
-            // SvgPicture.asset('lib/assets/icons/calling.svg')
+            height20,
+            Expanded(
+              child: SvgPicture.asset(
+                'lib/assets/icons/calling.svg',
+                height: sdp(context, 200),
+              ),
+            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: ElevatedButton(
+            onPressed: () {
+              navPopUntilPush(context, DashboardUI());
+            },
+            child: Text('Continue Shopping'),
+          ),
         ),
       ),
     );

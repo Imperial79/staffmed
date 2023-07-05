@@ -25,6 +25,11 @@ navPushReplacement(BuildContext context, Widget screen) {
       context, MaterialPageRoute(builder: (context) => screen));
 }
 
+navPopUntilPush(BuildContext context, Widget screen) {
+  Navigator.popUntil(context, (route) => false);
+  return navPush(context, screen);
+}
+
 Widget kBackButton(BuildContext context) {
   return IconButton(
     onPressed: () {

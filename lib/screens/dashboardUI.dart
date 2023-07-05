@@ -1,3 +1,4 @@
+import 'package:apollo/screens/Profile%20Screen/profileUI.dart';
 import 'package:apollo/screens/homeUI.dart';
 import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
 import 'package:apollo/utils/animated-indexed-stack.dart';
@@ -19,7 +20,7 @@ class _DashboardUIState extends State<DashboardUI> {
   List<Widget> screens = [
     HomeUI(),
     UploadPresUI(),
-    HomeUI(),
+    ProfileUI(),
   ];
 
   List<String> svIcons = [

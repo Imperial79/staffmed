@@ -47,7 +47,7 @@ class _HomeUIState extends State<HomeUI> {
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                                 Text(
-                                  'Avishek Verma',
+                                  'John Doe',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: sdp(context, 15),
