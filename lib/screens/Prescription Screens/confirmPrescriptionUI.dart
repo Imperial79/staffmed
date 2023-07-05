@@ -32,7 +32,7 @@ class _ConfirmPrescriptionUIState extends State<ConfirmPrescriptionUI> {
             Text(
               'A pharmacist will call you to confirm the medicines you need',
             ),
-            SvgPicture.asset('lib/assets/icons/calling.svg')
+            // SvgPicture.asset('lib/assets/icons/calling.svg')
           ],
         ),
       ),
