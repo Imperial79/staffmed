@@ -70,7 +70,7 @@ Widget kSubmitButton(
     child: Container(
       padding: EdgeInsets.all(13),
       decoration: BoxDecoration(
-        color: buttonColor ?? primaryColor,
+        color: buttonColor ?? kButtonColor,
         borderRadius: BorderRadius.circular(7),
       ),
       child: Container(
@@ -175,6 +175,16 @@ void ShowSnackBar(
           fontFamily: 'Poppins',
         ),
       ),
+    ),
+  );
+}
+
+kAppbarTitle(BuildContext context, {required String title}) {
+  return Text(
+    title,
+    style: TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: sdp(context, 13),
     ),
   );
 }

@@ -11,6 +11,8 @@ class UserData {
   static String date = '';
 }
 
+List<dynamic> cartList = [];
+
 String baseUrl = 'https://indiatvonline.in/staffmed/apis';
 
 Future<Map> ApiCallback({

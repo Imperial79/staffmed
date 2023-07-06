@@ -1,6 +1,7 @@
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
+import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,7 +24,7 @@ class _ProfileUIState extends State<ProfileUI> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'John Doe',
+                UserData.fullname,
                 style: TextStyle(
                   color: primaryColor,
                   fontWeight: FontWeight.w600,
@@ -31,7 +32,7 @@ class _ProfileUIState extends State<ProfileUI> {
                 ),
               ),
               Text(
-                '+91 909XXXX234',
+                '+91 ${UserData.phone}',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
@@ -82,10 +83,48 @@ class _ProfileUIState extends State<ProfileUI> {
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: kSubmitButton(context,
-              label: 'Log Out', buttonColor: Color.fromARGB(255, 182, 48, 38)),
+          child: kSubmitButton(context, onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return confirmLogout();
+              },
+            );
+          }, label: 'Log Out', buttonColor: Color.fromARGB(255, 182, 48, 38)),
         ),
       ),
+    );
+  }
+
+  Widget confirmLogout() {
+    return AlertDialog(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(7),
+      ),
+      titlePadding: EdgeInsets.all(15),
+      title: Text(
+        'Do you really want to logout?',
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: sdp(context, 15),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(
+            'No',
+            style: TextStyle(fontWeight: FontWeight.w600),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {},
+          child: Text('Yes'),
+        ),
+      ],
     );
   }
 

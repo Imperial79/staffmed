@@ -16,12 +16,9 @@ class _OrdersUIState extends State<OrdersUI> {
     return Scaffold(
       appBar: AppBar(
         leading: kBackButton(context),
-        title: Text(
-          'My Orders',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: sdp(context, 13),
-          ),
+        title: kAppbarTitle(
+          context,
+          title: 'My Orders',
         ),
       ),
       body: SingleChildScrollView(

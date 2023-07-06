@@ -1,6 +1,8 @@
 import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
+import 'package:apollo/screens/cartUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
+import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,33 @@ class HomeUI extends StatefulWidget {
 }
 
 class _HomeUIState extends State<HomeUI> {
+  List<dynamic> popularMedicines = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPopularMedicines();
+  }
+
+  fetchPopularMedicines() async {
+    var dataResult = await ApiCallback(uri: '/products/fetch-populars.php');
+
+    popularMedicines = dataResult['response'];
+
+    setState(() {});
+  }
+
+  addToCart(String prodId) async {
+    var dataResult = await ApiCallback(
+        uri: '/products/add-to-cart.php',
+        body: {'userId': UserData.id, 'productId': prodId});
+
+    // print(dataResult);
+    ShowSnackBar(context,
+        content: dataResult['message'], isDanger: dataResult['error']);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +76,7 @@ class _HomeUIState extends State<HomeUI> {
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                                 Text(
-                                  'John Doe',
+                                  UserData.fullname,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: sdp(context, 15),
@@ -57,9 +86,16 @@ class _HomeUIState extends State<HomeUI> {
                             ),
                           ),
                           width10,
-                          IconButton(
-                            onPressed: () {},
-                            icon: SvgPicture.asset('lib/assets/icons/cart.svg'),
+                          Badge(
+                            isLabelVisible: cartList.length != 0,
+                            label: Text(cartList.length.toString()),
+                            child: IconButton(
+                              onPressed: () {
+                                navPush(context, CartUI());
+                              },
+                              icon:
+                                  SvgPicture.asset('lib/assets/icons/cart.svg'),
+                            ),
                           ),
                         ],
                       ),
@@ -108,11 +144,11 @@ class _HomeUIState extends State<HomeUI> {
                       ),
                     ),
                     ListView.builder(
-                      itemCount: 10,
+                      itemCount: popularMedicines.length,
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return productListTile();
+                        return productListTile(popularMedicines[index]);
                       },
                     ),
                   ],
@@ -159,61 +195,183 @@ class _HomeUIState extends State<HomeUI> {
     );
   }
 
-  Widget productListTile() {
+  Widget productListTile(Map data) {
     return Container(
       margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(7),
         color: Colors.grey.shade100,
       ),
       child: Row(
         children: [
-          Container(
-            height: sdp(context, 55),
-            width: sdp(context, 80),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                  image: NetworkImage(
-                      'https://5.imimg.com/data5/SELLER/Default/2022/8/QM/AX/SS/129887935/paracetamol-tablets-1000x1000.jpeg'),
-                  fit: BoxFit.cover),
-            ),
-          ),
-          width10,
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Paracetamol',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: sdp(context, 55),
+                    width: sdp(context, 80),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: DecorationImage(
+                          image: NetworkImage(data['image']),
+                          fit: BoxFit.contain),
+                    ),
                   ),
-                ),
-                Text(
-                  '50mg',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500, color: Colors.grey.shade600),
-                ),
-              ],
-            ),
-          ),
-          width5,
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              child: Icon(Icons.add),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              child: SvgPicture.asset(
-                'lib/assets/icons/remove.svg',
-                height: sdp(context, 15),
+                  width10,
+                  Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data['name'],
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          data['company'],
+                          style: TextStyle(
+                            fontSize: sdp(context, 8),
+                          ),
+                        ),
+                        Text(
+                          data['dose'] + 'mg',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: sdp(context, 9),
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        height5,
+                        Wrap(
+                          alignment: WrapAlignment.center,
+                          runAlignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              '₹' + data['discountedPrice'].toString(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: sdp(context, 11),
+                              ),
+                            ),
+                            width5,
+                            Text(
+                              '₹' + data['price'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                                fontSize: sdp(context, 9),
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                            width10,
+                            Text(
+                              data['discount'] + "% off",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Color.fromARGB(255, 48, 137, 51),
+                                fontSize: sdp(context, 9),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  width5,
+                ],
               ),
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10.0),
+            child: data['availability'] == 'Out-of-Stock'
+                ? Text(
+                    'Out\nof\nstock',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: sdp(context, 7),
+                        color: Colors.red),
+                    textAlign: TextAlign.center,
+                  )
+                : GestureDetector(
+                    onTap: () {
+                      if (data['availability'] != 'Out-of-Stock') {
+                        if (!cartList.contains(data)) {
+                          addToCart(data['id']);
+
+                          setState(() {
+                            cartList.add(data);
+                          });
+
+                          ShowSnackBar(context,
+                              content: 'Product added to cart successfully!');
+                        } else {
+                          navPush(context, CartUI());
+                        }
+                      }
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: cartList.contains(data)
+                          ? primaryColorAccent
+                          : Colors.green,
+                      child: cartList.contains(data)
+                          ? SvgPicture.asset(
+                              'lib/assets/icons/cart.svg',
+                              colorFilter: svgColor(cartList.contains(data)
+                                  ? primaryColor
+                                  : Colors.green),
+                            )
+                          : Icon(
+                              Icons.add,
+                              color: cartList.contains(data)
+                                  ? Colors.green
+                                  : Colors.white,
+                            ),
+                    ),
+                    // Container(
+                    //   padding: EdgeInsets.symmetric(horizontal: 10),
+                    //   height: sdp(context, 70),
+                    //   width: sdp(context, 37),
+                    //   alignment: Alignment.center,
+                    //   decoration: BoxDecoration(
+                    //       color: data['availability'] == 'Out-of-Stock'
+                    //           ? Colors.red
+                    //           : cartList.contains(data)
+                    //               ? Colors.transparent
+                    //               : Colors.green,
+                    //       borderRadius:
+                    //           BorderRadius.horizontal(right: Radius.circular(7))),
+                    //   child: data['availability'] == 'Out-of-Stock'
+                    //       ? FittedBox(
+                    //           child: Text(
+                    //             'Out\nof\nstock',
+                    //             textAlign: TextAlign.center,
+                    //             style: TextStyle(
+                    //               color: Colors.white,
+                    //               fontWeight: FontWeight.w600,
+                    //               fontSize: sdp(context, 7),
+                    //             ),
+                    //           ),
+                    //         )
+                    //       : cartList.contains(data)
+                    //           ? SvgPicture.asset(
+                    //               'lib/assets/icons/cart.svg',
+                    //               colorFilter: svgColor(Colors.green),
+                    //             )
+                    //           : Icon(
+                    //               Icons.add,
+                    //               color: cartList.contains(data)
+                    //                   ? Colors.green
+                    //                   : Colors.white,
+                    //             ),
+                    // ),
+                  ),
           ),
         ],
       ),

@@ -1,4 +1,4 @@
-import 'package:apollo/screens/loginUI.dart';
+import 'package:apollo/screens/Auth%20Screens/loginUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';

@@ -1,10 +1,11 @@
-import 'package:apollo/screens/dashboardUI.dart';
-import 'package:apollo/screens/welcomeUI.dart';
+import 'package:apollo/screens/Auth%20Screens/splashUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
   runApp(MyApp());
 }
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Poppins',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
         useMaterial3: true,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -32,17 +33,8 @@ class MyApp extends StatelessWidget {
           ),
         ),
         cardTheme: CardTheme(elevation: 0, color: kCardColor),
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            foregroundColor: primaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(7),
-              side: BorderSide(color: primaryColor, width: 10),
-            ),
-          ),
-        ),
       ),
-      home: WelcomeUI(),
+      home: SplashUI(),
     );
   }
 }

@@ -1,11 +1,11 @@
-import 'dart:developer';
-
-import 'package:apollo/screens/registerUI.dart';
+import 'package:apollo/screens/dashboardUI.dart';
+import 'package:apollo/screens/Auth%20Screens/registerUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
 class LoginUI extends StatefulWidget {
   const LoginUI({super.key});
@@ -19,10 +19,19 @@ class _LoginUIState extends State<LoginUI> {
   final password = TextEditingController();
   bool isLoading = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    phone.dispose();
+    password.dispose();
+  }
+
   Future<void> login() async {
     setState(() {
       isLoading = true;
     });
+
     var dataResult = await ApiCallback(
       uri: '/users/login.php',
       body: {
@@ -30,12 +39,44 @@ class _LoginUIState extends State<LoginUI> {
         'password': password.text,
       },
     );
-    log(dataResult.toString());
-    if (!dataResult['error']) {}
 
     setState(() {
       isLoading = false;
     });
+    if (!dataResult['error']) {
+      saveUserdata(dataResult['response']);
+
+      ShowSnackBar(
+        context,
+        content: dataResult['message'],
+        isDanger: dataResult['error'],
+      );
+    } else {
+      ShowSnackBar(
+        context,
+        content: dataResult['message'],
+        isDanger: dataResult['error'],
+      );
+    }
+  }
+
+  saveUserdata(Map<String, dynamic> userData) async {
+    setState(() {
+      UserData.fullname = userData['fullname']!;
+      UserData.id = userData['id']!;
+      UserData.email = userData['email']!;
+      UserData.tokenId = userData['tokenId']!;
+      UserData.phone = userData['phone']!;
+      UserData.date = userData['date']!;
+    });
+    var userBox = await Hive.openBox('userData');
+
+    userBox.putAll({
+      'phone': phone.text,
+      'password': password.text,
+    });
+
+    navPushReplacement(context, DashboardUI());
   }
 
   @override

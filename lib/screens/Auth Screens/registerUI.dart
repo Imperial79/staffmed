@@ -1,12 +1,10 @@
 import 'dart:developer';
-
-import 'package:apollo/screens/dashboardUI.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../utils/sdp.dart';
+import '../../utils/sdp.dart';
 
 class RegisterUI extends StatefulWidget {
   const RegisterUI({super.key});
@@ -24,6 +22,17 @@ class _RegisterUIState extends State<RegisterUI> {
 
   bool isLoading = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    fullname.dispose();
+    email.dispose();
+    phone.dispose();
+    password.dispose();
+    confirmPassword.dispose();
+  }
+
   Future<void> register() async {
     setState(() {
       isLoading = true;
@@ -39,18 +48,34 @@ class _RegisterUIState extends State<RegisterUI> {
         },
       );
       log(dataResult.toString());
-      if (!dataResult['error']) {}
+      setState(() {
+        isLoading = false;
+      });
+      if (!dataResult['error']) {
+        ShowSnackBar(
+          context,
+          content: dataResult['message'],
+          isDanger: dataResult['error'],
+        );
 
+        Navigator.pop(context);
+      } else {
+        ShowSnackBar(
+          context,
+          content: dataResult['message'],
+          isDanger: dataResult['error'],
+        );
+      }
+    } else {
+      setState(() {
+        isLoading = false;
+      });
       ShowSnackBar(
         context,
-        content: dataResult['message'],
-        isDanger: dataResult['error'],
+        content: "Password and confirm password should be same!",
+        isDanger: true,
       );
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
