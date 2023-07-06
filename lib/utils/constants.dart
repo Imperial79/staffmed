@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'components.dart';
 
 class UserData {
   static String fullname = '';
@@ -11,7 +14,10 @@ class UserData {
   static String date = '';
 }
 
-List<dynamic> cartList = [];
+List<dynamic> cartProducts = [];
+List<dynamic> cartProductIds = [];
+List<dynamic> searchedProductList = [];
+List<dynamic> bannersList = [];
 
 String baseUrl = 'https://indiatvonline.in/staffmed/apis';
 
@@ -27,4 +33,14 @@ Future<Map> ApiCallback({
   );
 
   return jsonDecode(response.body);
+}
+
+addToCart(BuildContext context, String prodId, StateSetter setState) async {
+  var dataResult = await ApiCallback(
+      uri: '/products/add-to-cart.php',
+      body: {'userId': UserData.id, 'productId': prodId});
+
+  ShowSnackBar(context,
+      content: dataResult['message'], isDanger: dataResult['error']);
+  setState(() {});
 }

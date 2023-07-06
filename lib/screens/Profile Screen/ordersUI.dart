@@ -96,6 +96,7 @@ class _OrdersUIState extends State<OrdersUI> {
             ),
             child: Text('Invoice'),
           ),
+          KOutlinedButton.short(onPressed: () {}, label: 'Invoice'),
         ],
       ),
     );

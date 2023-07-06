@@ -1,14 +1,13 @@
 import 'dart:developer';
 
 import 'package:apollo/screens/dashboardUI.dart';
+import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import '../../utils/constants.dart';
-import 'loginUI.dart';
 
 class SplashUI extends StatefulWidget {
   const SplashUI({super.key});
@@ -24,12 +23,21 @@ class _SplashUIState extends State<SplashUI> {
     validate();
   }
 
+  fetchBanners() async {
+    var dataResult = await ApiCallback(uri: '/banners/fetch.php');
+
+    if (!dataResult['error']) {
+      bannersList = dataResult['response'];
+    }
+  }
+
   fetchCartItems() async {
     var dataResult = await ApiCallback(
         uri: '/products/fetch-cart.php', body: {'userId': UserData.id});
 
     if (!dataResult['error']) {
-      cartList = dataResult['response'];
+      cartProducts = dataResult['response'];
+      cartProductIds = dataResult['idsArray'];
     }
   }
 
@@ -39,7 +47,7 @@ class _SplashUIState extends State<SplashUI> {
     if (userBox.get('phone') != null && userBox.get('password') != null) {
       reLogin(userBox.get('phone'), userBox.get('password'));
     } else {
-      navPushReplacement(context, LoginUI());
+      navPushReplacement(context, WelcomeUI());
     }
   }
 
@@ -62,7 +70,8 @@ class _SplashUIState extends State<SplashUI> {
         UserData.phone = userData['phone']!;
         UserData.date = userData['date']!;
       });
-
+      await fetchCartItems();
+      await fetchBanners();
       navPushReplacement(context, DashboardUI());
 
       ShowSnackBar(
@@ -77,8 +86,6 @@ class _SplashUIState extends State<SplashUI> {
         isDanger: dataResult['error'],
       );
     }
-
-    fetchCartItems();
   }
 
   @override

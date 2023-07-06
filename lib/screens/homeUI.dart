@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
 import 'package:apollo/screens/cartUI.dart';
+import 'package:apollo/screens/productsUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
@@ -29,17 +33,6 @@ class _HomeUIState extends State<HomeUI> {
 
     popularMedicines = dataResult['response'];
 
-    setState(() {});
-  }
-
-  addToCart(String prodId) async {
-    var dataResult = await ApiCallback(
-        uri: '/products/add-to-cart.php',
-        body: {'userId': UserData.id, 'productId': prodId});
-
-    // print(dataResult);
-    ShowSnackBar(context,
-        content: dataResult['message'], isDanger: dataResult['error']);
     setState(() {});
   }
 
@@ -87,11 +80,18 @@ class _HomeUIState extends State<HomeUI> {
                           ),
                           width10,
                           Badge(
-                            isLabelVisible: cartList.length != 0,
-                            label: Text(cartList.length.toString()),
+                            backgroundColor: kButtonColor,
+                            isLabelVisible: cartProductIds.length != 0,
+                            label: Text(cartProductIds.length.toString()),
                             child: IconButton(
                               onPressed: () {
-                                navPush(context, CartUI());
+                                Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => CartUI()))
+                                    .then((value) {
+                                  setState(() {});
+                                });
                               },
                               icon:
                                   SvgPicture.asset('lib/assets/icons/cart.svg'),
@@ -111,14 +111,14 @@ class _HomeUIState extends State<HomeUI> {
                           viewportFraction: 1,
                         ),
                         items: List.generate(
-                          5,
+                          bannersList.length,
                           (index) => Container(
                             margin: EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
-                                image: NetworkImage(
-                                    'https://assets.telegraphindia.com/telegraph/2022/Aug/1661017334_medicine.jpg'),
+                                image:
+                                    NetworkImage(bannersList[index]['image']),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -148,7 +148,8 @@ class _HomeUIState extends State<HomeUI> {
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        return productListTile(popularMedicines[index]);
+                        return productListTile(
+                            context, popularMedicines[index]);
                       },
                     ),
                   ],
@@ -195,7 +196,185 @@ class _HomeUIState extends State<HomeUI> {
     );
   }
 
-  Widget productListTile(Map data) {
+  // Widget productListTile(Map data) {
+  //   bool inCart = cartProductIds.contains(data['id'].toString());
+
+  //   return Container(
+  //     margin: EdgeInsets.only(bottom: 12),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(7),
+  //       color: Colors.grey.shade100,
+  //     ),
+  //     child: Row(
+  //       children: [
+  //         Expanded(
+  //           child: Padding(
+  //             padding: EdgeInsets.all(10.0),
+  //             child: Row(
+  //               crossAxisAlignment: CrossAxisAlignment.center,
+  //               children: [
+  //                 Container(
+  //                   height: sdp(context, 55),
+  //                   width: sdp(context, 80),
+  //                   decoration: BoxDecoration(
+  //                     borderRadius: BorderRadius.circular(10),
+  //                     image: DecorationImage(
+  //                         image: NetworkImage(data['image']),
+  //                         fit: BoxFit.contain),
+  //                   ),
+  //                 ),
+  //                 width10,
+  //                 Flexible(
+  //                   child: Column(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     children: [
+  //                       Text(
+  //                         data['name'],
+  //                         style: TextStyle(
+  //                           fontWeight: FontWeight.w600,
+  //                         ),
+  //                       ),
+  //                       Text(
+  //                         data['company'],
+  //                         style: TextStyle(
+  //                           fontSize: sdp(context, 8),
+  //                         ),
+  //                       ),
+  //                       Text(
+  //                         data['dose'] + 'mg',
+  //                         style: TextStyle(
+  //                           fontWeight: FontWeight.w500,
+  //                           fontSize: sdp(context, 9),
+  //                           color: Colors.grey.shade600,
+  //                         ),
+  //                       ),
+  //                       height5,
+  //                       Wrap(
+  //                         alignment: WrapAlignment.center,
+  //                         runAlignment: WrapAlignment.center,
+  //                         crossAxisAlignment: WrapCrossAlignment.center,
+  //                         children: [
+  //                           Text(
+  //                             '₹' + data['discountedPrice'].toString(),
+  //                             style: TextStyle(
+  //                               fontWeight: FontWeight.w600,
+  //                               fontSize: sdp(context, 11),
+  //                             ),
+  //                           ),
+  //                           width5,
+  //                           Text(
+  //                             '₹' + data['price'],
+  //                             style: TextStyle(
+  //                               fontWeight: FontWeight.w600,
+  //                               color: Colors.grey,
+  //                               fontSize: sdp(context, 9),
+  //                               decoration: TextDecoration.lineThrough,
+  //                             ),
+  //                           ),
+  //                           width10,
+  //                           Text(
+  //                             data['discount'] + "% off",
+  //                             style: TextStyle(
+  //                               fontWeight: FontWeight.w600,
+  //                               color: Color.fromARGB(255, 48, 137, 51),
+  //                               fontSize: sdp(context, 9),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 width5,
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //         Padding(
+  //           padding: EdgeInsets.only(right: 10.0),
+  //           child: data['availability'] == 'Out-of-Stock'
+  //               ? Text(
+  //                   'Out\nof\nstock',
+  //                   style: TextStyle(
+  //                       fontWeight: FontWeight.w600,
+  //                       fontSize: sdp(context, 7),
+  //                       color: Colors.red),
+  //                   textAlign: TextAlign.center,
+  //                 )
+  //               : GestureDetector(
+  //                   onTap: () {
+  //                     if (data['availability'] != 'Out-of-Stock') {
+  //                       if (!inCart) {
+  //                         addToCart(context, data['id'], setState);
+
+  //                         setState(() {
+  //                           cartProductIds.add(data['id'].toString());
+  //                         });
+  //                       } else {
+  //                         navPush(context, CartUI());
+  //                       }
+  //                     }
+  //                   },
+  //                   child: CircleAvatar(
+  //                     backgroundColor:
+  //                         inCart ? primaryColorAccent : Colors.green,
+  //                     child: inCart
+  //                         ? SvgPicture.asset(
+  //                             'lib/assets/icons/cart.svg',
+  //                             colorFilter: svgColor(
+  //                                 inCart ? primaryColor : Colors.green),
+  //                           )
+  //                         : Icon(
+  //                             Icons.add,
+  //                             color: inCart ? Colors.green : Colors.white,
+  //                           ),
+  //                   ),
+  //                 ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget searchBar() {
+    return GestureDetector(
+      onTap: () {
+        navPush(context, ProductsUI());
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Hero(
+              tag: 'search',
+              child: SvgPicture.asset(
+                'lib/assets/icons/search.svg',
+                height: sdp(context, 15),
+                colorFilter: svgColor(Colors.grey),
+              ),
+            ),
+            width10,
+            Text(
+              'Search medicines',
+              style: TextStyle(
+                  fontSize: sdp(context, 11),
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget productListTile(BuildContext context, Map data) {
+    bool inCart = cartProductIds.contains(data['id'].toString());
+
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -302,107 +481,38 @@ class _HomeUIState extends State<HomeUI> {
                 : GestureDetector(
                     onTap: () {
                       if (data['availability'] != 'Out-of-Stock') {
-                        if (!cartList.contains(data)) {
-                          addToCart(data['id']);
+                        if (!inCart) {
+                          addToCart(context, data['id'], setState);
 
                           setState(() {
-                            cartList.add(data);
+                            cartProductIds.add(data['id'].toString());
                           });
 
-                          ShowSnackBar(context,
-                              content: 'Product added to cart successfully!');
+                          print(cartProductIds.length);
                         } else {
-                          navPush(context, CartUI());
+                          navPush(context, CartUI()).then((value) {
+                            setState(() {
+                              print('here');
+                            });
+                          });
                         }
                       }
                     },
                     child: CircleAvatar(
-                      backgroundColor: cartList.contains(data)
-                          ? primaryColorAccent
-                          : Colors.green,
-                      child: cartList.contains(data)
+                      backgroundColor:
+                          inCart ? primaryColorAccent : Colors.green,
+                      child: inCart
                           ? SvgPicture.asset(
                               'lib/assets/icons/cart.svg',
-                              colorFilter: svgColor(cartList.contains(data)
-                                  ? primaryColor
-                                  : Colors.green),
+                              colorFilter: svgColor(
+                                  inCart ? primaryColor : Colors.green),
                             )
                           : Icon(
                               Icons.add,
-                              color: cartList.contains(data)
-                                  ? Colors.green
-                                  : Colors.white,
+                              color: inCart ? Colors.green : Colors.white,
                             ),
                     ),
-                    // Container(
-                    //   padding: EdgeInsets.symmetric(horizontal: 10),
-                    //   height: sdp(context, 70),
-                    //   width: sdp(context, 37),
-                    //   alignment: Alignment.center,
-                    //   decoration: BoxDecoration(
-                    //       color: data['availability'] == 'Out-of-Stock'
-                    //           ? Colors.red
-                    //           : cartList.contains(data)
-                    //               ? Colors.transparent
-                    //               : Colors.green,
-                    //       borderRadius:
-                    //           BorderRadius.horizontal(right: Radius.circular(7))),
-                    //   child: data['availability'] == 'Out-of-Stock'
-                    //       ? FittedBox(
-                    //           child: Text(
-                    //             'Out\nof\nstock',
-                    //             textAlign: TextAlign.center,
-                    //             style: TextStyle(
-                    //               color: Colors.white,
-                    //               fontWeight: FontWeight.w600,
-                    //               fontSize: sdp(context, 7),
-                    //             ),
-                    //           ),
-                    //         )
-                    //       : cartList.contains(data)
-                    //           ? SvgPicture.asset(
-                    //               'lib/assets/icons/cart.svg',
-                    //               colorFilter: svgColor(Colors.green),
-                    //             )
-                    //           : Icon(
-                    //               Icons.add,
-                    //               color: cartList.contains(data)
-                    //                   ? Colors.green
-                    //                   : Colors.white,
-                    //             ),
-                    // ),
                   ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget searchBar() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'lib/assets/icons/search.svg',
-            height: sdp(context, 15),
-            colorFilter: svgColor(Colors.grey),
-          ),
-          width10,
-          Flexible(
-            child: TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Search medicines',
-                hintStyle: TextStyle(
-                  fontSize: sdp(context, 11),
-                ),
-              ),
-            ),
           ),
         ],
       ),

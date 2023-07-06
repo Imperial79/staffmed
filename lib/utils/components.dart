@@ -5,6 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
+import '../screens/cartUI.dart';
+import 'constants.dart';
+
 SizedBox get height5 => SizedBox(height: 5);
 SizedBox get height10 => SizedBox(height: 10);
 SizedBox get height15 => SizedBox(height: 15);
@@ -16,17 +19,17 @@ SizedBox get width10 => SizedBox(width: 10);
 SizedBox get width15 => SizedBox(width: 15);
 SizedBox get width20 => SizedBox(width: 20);
 
-navPush(BuildContext context, Widget screen) {
+Future<void> navPush(BuildContext context, Widget screen) {
   return Navigator.push(
       context, MaterialPageRoute(builder: (context) => screen));
 }
 
-navPushReplacement(BuildContext context, Widget screen) {
+Future<void> navPushReplacement(BuildContext context, Widget screen) {
   return Navigator.pushReplacement(
       context, MaterialPageRoute(builder: (context) => screen));
 }
 
-navPopUntilPush(BuildContext context, Widget screen) {
+Future<void> navPopUntilPush(BuildContext context, Widget screen) {
   Navigator.popUntil(context, (route) => false);
   return navPush(context, screen);
 }
@@ -188,3 +191,65 @@ kAppbarTitle(BuildContext context, {required String title}) {
     ),
   );
 }
+
+class KOutlinedButton {
+  static Widget short(
+      {required void Function()? onPressed, required String label}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: kButtonColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
+          side: BorderSide(
+            color: kButtonColor,
+          ),
+        ),
+      ),
+      child: Text(label),
+    );
+  }
+
+  static Widget expanded(
+      {required void Function()? onPressed, required String label}) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: kButtonColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
+          side: BorderSide(
+            color: kButtonColor,
+          ),
+        ),
+      ),
+      child: Container(
+        width: double.infinity,
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+// Widget kOutlinedButton(
+//     {required void Function()? onPressed, required String label}) {
+//   return ElevatedButton(
+//     onPressed: onPressed,
+//     style: ElevatedButton.styleFrom(
+//       backgroundColor: Colors.transparent,
+//       foregroundColor: kButtonColor,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(7),
+//         side: BorderSide(
+//           color: kButtonColor,
+//         ),
+//       ),
+//     ),
+//     child: Text(label),
+//   );
+// }
