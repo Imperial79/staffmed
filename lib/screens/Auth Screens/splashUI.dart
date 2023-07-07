@@ -59,7 +59,7 @@ class _SplashUIState extends State<SplashUI> {
         'password': password,
       },
     );
-
+    // log(dataResult.toString());
     if (!dataResult['error']) {
       Map<String, dynamic> userData = dataResult['response'];
       setState(() {
@@ -69,6 +69,7 @@ class _SplashUIState extends State<SplashUI> {
         UserData.tokenId = userData['tokenId']!;
         UserData.phone = userData['phone']!;
         UserData.date = userData['date']!;
+        UserData.addresses = userData['addresses'];
       });
       await fetchCartItems();
       await fetchBanners();

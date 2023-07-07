@@ -100,6 +100,7 @@ Widget kTextField(
   String? prefixText,
   bool obscureText = false,
   int? maxLength,
+  int? maxLines = 1,
 }) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -131,6 +132,8 @@ Widget kTextField(
             obscureText: obscureText,
             keyboardType: keyboardType,
             maxLength: maxLength,
+            maxLines: maxLines,
+            minLines: 1,
             decoration: InputDecoration(
               counterText: '',
               border: InputBorder.none,
@@ -198,6 +201,7 @@ class KOutlinedButton {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: kButtonColor,
         shape: RoundedRectangleBorder(
@@ -216,6 +220,7 @@ class KOutlinedButton {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
+        elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: kButtonColor,
         shape: RoundedRectangleBorder(

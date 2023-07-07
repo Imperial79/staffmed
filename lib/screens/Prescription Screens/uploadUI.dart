@@ -15,83 +15,82 @@ class _UploadPresUIState extends State<UploadPresUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: kBackButton(context),
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Upload your prescriptions',
-              style: TextStyle(
-                  fontWeight: FontWeight.w700, fontSize: sdp(context, 13)),
-            ),
-            height5,
-            Text(
-              'and let us arrange the medicines for you',
-              style: TextStyle(fontWeight: FontWeight.w400),
-            ),
-            height20,
-            Center(
-              child: SvgPicture.asset(
-                'lib/assets/icons/prescription.svg',
-                height: sdp(context, 150),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Upload your prescriptions',
+                style: TextStyle(
+                    fontWeight: FontWeight.w700, fontSize: sdp(context, 13)),
               ),
-            ),
-            height20,
-            Center(
-              child: Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  presImage(context),
-                  presImage(context),
-                  // presImage(context),
-                  // presImage(context),
-                ],
+              height5,
+              Text(
+                'and let us arrange the medicines for you',
+                style: TextStyle(fontWeight: FontWeight.w400),
               ),
-            ),
-            height10,
-            Center(
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Upload more prescription',
-                  textAlign: TextAlign.center,
+              height20,
+              Center(
+                child: SvgPicture.asset(
+                  'lib/assets/icons/prescription.svg',
+                  height: sdp(context, 150),
                 ),
               ),
-            ),
-            height20,
-            ElevatedButton(
-              onPressed: () {
-                navPush(context, ConfirmPrescriptionUI());
-              },
-              child: Container(
-                width: double.infinity,
-                child: Text(
-                  'Upload prescription',
-                  textAlign: TextAlign.center,
+              height20,
+              Center(
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  alignment: WrapAlignment.center,
+                  runAlignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    presImage(context),
+                    presImage(context),
+                    // presImage(context),
+                    // presImage(context),
+                  ],
                 ),
               ),
-            ),
-            height20,
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(15),
-                child: Text(
-                  'All prescriptions uploaded are encrypted & visible only to our trusted pharmacists.\n\nAny prescription yopu upload is validated before processing the order.',
-                  style: TextStyle(
-                    fontSize: sdp(context, 10),
+              height10,
+              Center(
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Upload more prescription',
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
-            ),
-          ],
+              height20,
+              ElevatedButton(
+                onPressed: () {
+                  navPush(context, ConfirmPrescriptionUI());
+                },
+                child: Container(
+                  width: double.infinity,
+                  child: Text(
+                    'Upload prescription',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              height20,
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Text(
+                    'All prescriptions uploaded are encrypted & visible only to our trusted pharmacists.\n\nAny prescription you upload is validated before processing the order.',
+                    style: TextStyle(
+                        fontSize: sdp(context, 10),
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -12,7 +12,10 @@ class UserData {
   static String email = '';
   static String tokenId = '';
   static String date = '';
+  static List<dynamic> addresses = [];
 }
+
+int defaultAddress = 0;
 
 List<dynamic> cartProducts = [];
 List<dynamic> cartProductIds = [];

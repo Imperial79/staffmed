@@ -1,3 +1,4 @@
+import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
@@ -15,10 +16,23 @@ class CartUI extends StatefulWidget {
 class _CartUIState extends State<CartUI> {
   bool isCartEmpty = true;
   bool isloading = false;
+  Map stockMap = {};
+  double total = 0.0;
+  double totalDiscount = 0.0;
+
   @override
   void initState() {
     super.initState();
     fetchCartItems();
+    calculateBillSummary();
+  }
+
+  calculateBillSummary() {
+    for (var i = 0; i < cartProducts.length; i++) {
+      total += double.parse(cartProducts[i]['price'].toString());
+      totalDiscount +=
+          double.parse(cartProducts[i]['discountedPrice'].toString());
+    }
   }
 
   fetchCartItems() async {
@@ -120,7 +134,7 @@ class _CartUIState extends State<CartUI> {
                                 ),
                               ),
                               Text(
-                                '₹ 190',
+                                '₹ ' + total.toString(),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
@@ -139,7 +153,7 @@ class _CartUIState extends State<CartUI> {
                                 ),
                               ),
                               Text(
-                                '-₹90.67',
+                                '-₹' + (total - totalDiscount).toString(),
                                 style: TextStyle(
                                     color: Colors.green,
                                     fontWeight: FontWeight.w600),
@@ -181,7 +195,7 @@ class _CartUIState extends State<CartUI> {
                         ),
                       ),
                       Text(
-                        '₹90',
+                        '₹' + totalDiscount.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: sdp(context, 15)),
@@ -191,10 +205,16 @@ class _CartUIState extends State<CartUI> {
                   height10,
                   Divider(),
                   height10,
-                  deliveryAddress(context),
-                  height10,
-                  KOutlinedButton.expanded(
-                      onPressed: () {}, label: 'Add Address'),
+                  UserData.addresses.isNotEmpty
+                      ? deliveryAddress(context)
+                      : KOutlinedButton.expanded(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyAddresUI()));
+                          },
+                          label: 'Add Address'),
                 ],
               ),
             ),
@@ -233,7 +253,7 @@ class _CartUIState extends State<CartUI> {
                   children: [
                     Text('Total payable'),
                     Text(
-                      '₹290',
+                      '₹' + (totalDiscount).toString(),
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -251,36 +271,58 @@ class _CartUIState extends State<CartUI> {
     );
   }
 
-  Row deliveryAddress(BuildContext context) {
-    return Row(
+  Widget deliveryAddress(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SvgPicture.asset(
-          'lib/assets/icons/delivery.svg',
-          height: sdp(context, 20),
+        Row(
+          children: [
+            SvgPicture.asset(
+              'lib/assets/icons/delivery.svg',
+              height: sdp(context, 20),
+            ),
+            width10,
+            Text(
+              'Delivery to',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            width10,
+            Spacer(),
+            TextButton(
+              onPressed: () {
+                Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MyAddresUI()))
+                    .then((value) {
+                  setState(() {});
+                });
+              },
+              child: Text('Change'),
+            ),
+          ],
         ),
-        width10,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Delivery to',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-              Text(
-                'A/56,Aesby More, Dgp station',
-                style: TextStyle(
-                  // fontWeight: FontWeight.w500,
-                  fontSize: sdp(context, 9),
-                ),
-              ),
-            ],
+        height5,
+        Text(
+          UserData.addresses[defaultAddress]['recipient'],
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: sdp(context, 10),
           ),
         ),
-        width10,
-        TextButton(
-          onPressed: () {},
-          child: Text('Change'),
+        Text(
+          "+91 " + UserData.addresses[defaultAddress]['phone'],
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: sdp(context, 10),
+          ),
+        ),
+        Text(
+          UserData.addresses[defaultAddress]['address'] +
+              " - " +
+              UserData.addresses[defaultAddress]['pincode'],
+          style: TextStyle(
+            // fontWeight: FontWeight.w500,
+            fontSize: sdp(context, 9),
+          ),
         ),
       ],
     );

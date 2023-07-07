@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
 import 'package:apollo/screens/cartUI.dart';
 import 'package:apollo/screens/productsUI.dart';
@@ -8,6 +5,7 @@ import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -112,16 +110,20 @@ class _HomeUIState extends State<HomeUI> {
                         ),
                         items: List.generate(
                           bannersList.length,
-                          (index) => Container(
-                            margin: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image:
-                                    NetworkImage(bannersList[index]['image']),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                          (index) => CachedNetworkImage(
+                            imageUrl: bannersList[index]['image'],
+                            imageBuilder: (context, imageProvider) {
+                              return Container(
+                                margin: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -195,147 +197,6 @@ class _HomeUIState extends State<HomeUI> {
       ),
     );
   }
-
-  // Widget productListTile(Map data) {
-  //   bool inCart = cartProductIds.contains(data['id'].toString());
-
-  //   return Container(
-  //     margin: EdgeInsets.only(bottom: 12),
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(7),
-  //       color: Colors.grey.shade100,
-  //     ),
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           child: Padding(
-  //             padding: EdgeInsets.all(10.0),
-  //             child: Row(
-  //               crossAxisAlignment: CrossAxisAlignment.center,
-  //               children: [
-  //                 Container(
-  //                   height: sdp(context, 55),
-  //                   width: sdp(context, 80),
-  //                   decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(10),
-  //                     image: DecorationImage(
-  //                         image: NetworkImage(data['image']),
-  //                         fit: BoxFit.contain),
-  //                   ),
-  //                 ),
-  //                 width10,
-  //                 Flexible(
-  //                   child: Column(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     crossAxisAlignment: CrossAxisAlignment.start,
-  //                     children: [
-  //                       Text(
-  //                         data['name'],
-  //                         style: TextStyle(
-  //                           fontWeight: FontWeight.w600,
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         data['company'],
-  //                         style: TextStyle(
-  //                           fontSize: sdp(context, 8),
-  //                         ),
-  //                       ),
-  //                       Text(
-  //                         data['dose'] + 'mg',
-  //                         style: TextStyle(
-  //                           fontWeight: FontWeight.w500,
-  //                           fontSize: sdp(context, 9),
-  //                           color: Colors.grey.shade600,
-  //                         ),
-  //                       ),
-  //                       height5,
-  //                       Wrap(
-  //                         alignment: WrapAlignment.center,
-  //                         runAlignment: WrapAlignment.center,
-  //                         crossAxisAlignment: WrapCrossAlignment.center,
-  //                         children: [
-  //                           Text(
-  //                             '₹' + data['discountedPrice'].toString(),
-  //                             style: TextStyle(
-  //                               fontWeight: FontWeight.w600,
-  //                               fontSize: sdp(context, 11),
-  //                             ),
-  //                           ),
-  //                           width5,
-  //                           Text(
-  //                             '₹' + data['price'],
-  //                             style: TextStyle(
-  //                               fontWeight: FontWeight.w600,
-  //                               color: Colors.grey,
-  //                               fontSize: sdp(context, 9),
-  //                               decoration: TextDecoration.lineThrough,
-  //                             ),
-  //                           ),
-  //                           width10,
-  //                           Text(
-  //                             data['discount'] + "% off",
-  //                             style: TextStyle(
-  //                               fontWeight: FontWeight.w600,
-  //                               color: Color.fromARGB(255, 48, 137, 51),
-  //                               fontSize: sdp(context, 9),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 width5,
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //         Padding(
-  //           padding: EdgeInsets.only(right: 10.0),
-  //           child: data['availability'] == 'Out-of-Stock'
-  //               ? Text(
-  //                   'Out\nof\nstock',
-  //                   style: TextStyle(
-  //                       fontWeight: FontWeight.w600,
-  //                       fontSize: sdp(context, 7),
-  //                       color: Colors.red),
-  //                   textAlign: TextAlign.center,
-  //                 )
-  //               : GestureDetector(
-  //                   onTap: () {
-  //                     if (data['availability'] != 'Out-of-Stock') {
-  //                       if (!inCart) {
-  //                         addToCart(context, data['id'], setState);
-
-  //                         setState(() {
-  //                           cartProductIds.add(data['id'].toString());
-  //                         });
-  //                       } else {
-  //                         navPush(context, CartUI());
-  //                       }
-  //                     }
-  //                   },
-  //                   child: CircleAvatar(
-  //                     backgroundColor:
-  //                         inCart ? primaryColorAccent : Colors.green,
-  //                     child: inCart
-  //                         ? SvgPicture.asset(
-  //                             'lib/assets/icons/cart.svg',
-  //                             colorFilter: svgColor(
-  //                                 inCart ? primaryColor : Colors.green),
-  //                           )
-  //                         : Icon(
-  //                             Icons.add,
-  //                             color: inCart ? Colors.green : Colors.white,
-  //                           ),
-  //                   ),
-  //                 ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget searchBar() {
     return GestureDetector(

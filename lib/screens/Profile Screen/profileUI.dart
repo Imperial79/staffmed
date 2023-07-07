@@ -1,3 +1,4 @@
+import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
@@ -57,7 +58,9 @@ class _ProfileUIState extends State<ProfileUI> {
                         label: 'Prescription Orders',
                       ),
                       settingsTile(
-                        onTap: () {},
+                        onTap: () {
+                          navPush(context, MyAddresUI());
+                        },
                         icon: 'address',
                         size: 25,
                         label: 'My Addresses',
@@ -134,7 +137,8 @@ class _ProfileUIState extends State<ProfileUI> {
     required String label,
     double? size,
   }) {
-    return GestureDetector(
+    return InkWell(
+      highlightColor: Colors.transparent,
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 10),
