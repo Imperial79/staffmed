@@ -1,5 +1,6 @@
 import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
-import 'package:apollo/screens/cartUI.dart';
+import 'package:apollo/screens/Cart%20screens/cartUI.dart';
+import 'package:apollo/screens/dashboardUI.dart';
 import 'package:apollo/screens/productsUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';

@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:apollo/screens/Cart%20screens/checkoutUI.dart';
+import 'package:apollo/screens/Cart%20screens/dateAndTimeUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
@@ -16,23 +21,29 @@ class CartUI extends StatefulWidget {
 class _CartUIState extends State<CartUI> {
   bool isCartEmpty = true;
   bool isloading = false;
-  Map stockMap = {};
+
   double total = 0.0;
-  double totalDiscount = 0.0;
+  double totalPayable = 0.0;
 
   @override
   void initState() {
     super.initState();
     fetchCartItems();
-    calculateBillSummary();
   }
 
   calculateBillSummary() {
+    total = 0;
+    totalPayable = 0;
+
     for (var i = 0; i < cartProducts.length; i++) {
-      total += double.parse(cartProducts[i]['price'].toString());
-      totalDiscount +=
+      total += stockMap[cartProducts[i]['id']] *
+          double.parse(cartProducts[i]['price'].toString());
+
+      totalPayable += stockMap[cartProducts[i]['id']] *
           double.parse(cartProducts[i]['discountedPrice'].toString());
     }
+
+    setState(() {});
   }
 
   fetchCartItems() async {
@@ -45,10 +56,18 @@ class _CartUIState extends State<CartUI> {
       cartProducts = dataResult['response'];
       cartProductIds = dataResult['idsArray'];
 
+      cartProductIds.forEach((element) {
+        if (!stockMap.containsKey(element)) {
+          stockMap[element] = 1;
+        }
+      });
+
       setState(() {
         isloading = false;
       });
     }
+
+    calculateBillSummary();
   }
 
   removeProduct(String prodId) async {
@@ -59,6 +78,9 @@ class _CartUIState extends State<CartUI> {
         uri: '/products/remove-from-cart.php',
         body: {'userId': UserData.id, 'productId': prodId});
 
+    cartProducts.remove(prodId);
+    cartProductIds.remove(prodId);
+
     ShowSnackBar(context,
         content: dataResult['message'], isDanger: dataResult['error']);
 
@@ -66,6 +88,8 @@ class _CartUIState extends State<CartUI> {
     setState(() {
       isloading = false;
     });
+
+    calculateBillSummary();
   }
 
   @override
@@ -134,7 +158,7 @@ class _CartUIState extends State<CartUI> {
                                 ),
                               ),
                               Text(
-                                '₹ ' + total.toString(),
+                                '₹ ' + total.toStringAsFixed(2),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
@@ -148,14 +172,15 @@ class _CartUIState extends State<CartUI> {
                                 child: Text(
                                   'Total discount',
                                   style: TextStyle(
-                                      color: Colors.green,
+                                      color: Colors.green.shade700,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
                               Text(
-                                '-₹' + (total - totalDiscount).toString(),
+                                '- ₹ ' +
+                                    (total - totalPayable).toStringAsFixed(2),
                                 style: TextStyle(
-                                    color: Colors.green,
+                                    color: Colors.green.shade700,
                                     fontWeight: FontWeight.w600),
                               ),
                             ],
@@ -167,14 +192,14 @@ class _CartUIState extends State<CartUI> {
                                 child: Text(
                                   'Delivery fee',
                                   style: TextStyle(
-                                      color: Colors.green,
+                                      color: Colors.green.shade700,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
                               Text(
                                 'Free',
                                 style: TextStyle(
-                                    color: Colors.green,
+                                    color: Colors.green.shade700,
                                     fontWeight: FontWeight.w600),
                               ),
                             ],
@@ -184,23 +209,26 @@ class _CartUIState extends State<CartUI> {
                     ),
                   ),
                   height10,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Total payable',
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 7.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Total payable',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: sdp(context, 13)),
+                          ),
+                        ),
+                        Text(
+                          '₹ ' + totalPayable.toStringAsFixed(2),
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              fontSize: sdp(context, 15)),
+                              fontSize: sdp(context, 13)),
                         ),
-                      ),
-                      Text(
-                        '₹' + totalDiscount.toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: sdp(context, 15)),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   height10,
                   Divider(),
@@ -242,31 +270,49 @@ class _CartUIState extends State<CartUI> {
       bottomNavigationBar: Visibility(
         visible: !isCartEmpty,
         child: SafeArea(
-            child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+              Divider(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
                   children: [
-                    Text('Total payable'),
-                    Text(
-                      '₹' + (totalDiscount).toString(),
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Total payable'),
+                          Text(
+                            '₹ ' + totalPayable.toStringAsFixed(2),
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                    width10,
+                    ElevatedButton(
+                      onPressed: () {
+                        if (UserData.addresses.isEmpty) {
+                          ShowSnackBar(context,
+                              content: 'Please add an address first!');
+                        } else {
+                          navPush(
+                            context,
+                            DateAndTimeUI(
+                                totalPayable: totalPayable.toStringAsFixed(2)),
+                          );
+                        }
+                      },
+                      child: Text('Continue'),
                     ),
                   ],
                 ),
               ),
-              width10,
-              ElevatedButton(
-                onPressed: () {},
-                child: Text('Continue'),
-              ),
             ],
           ),
-        )),
+        ),
       ),
     );
   }
@@ -413,7 +459,14 @@ class _CartUIState extends State<CartUI> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        if (stockMap[data['id']] > 1) {
+                          setState(() {
+                            stockMap[data['id']] -= 1;
+                          });
+                          calculateBillSummary();
+                        }
+                      },
                       child: Icon(
                         Icons.horizontal_rule,
                         size: sdp(context, 13),
@@ -421,12 +474,20 @@ class _CartUIState extends State<CartUI> {
                     ),
                     width10,
                     Text(
-                      "10",
+                      stockMap[data['id']].toString(),
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     width10,
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        if (stockMap[data['id']] < 5) {
+                          setState(() {
+                            stockMap[data['id']] += 1;
+                          });
+
+                          calculateBillSummary();
+                        }
+                      },
                       child: Icon(
                         Icons.add,
                         size: sdp(context, 13),
@@ -439,16 +500,17 @@ class _CartUIState extends State<CartUI> {
           ),
           // height10,
           InkWell(
-              onTap: () {
-                removeProduct(data['id']);
-              },
-              child: Text(
-                'Remove',
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red,
-                    fontSize: sdp(context, 10)),
-              ))
+            onTap: () {
+              removeProduct(data['id']);
+            },
+            child: Text(
+              'Remove',
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.red,
+                  fontSize: sdp(context, 10)),
+            ),
+          ),
         ],
       ),
     );

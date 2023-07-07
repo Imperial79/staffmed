@@ -74,6 +74,8 @@ class _MyAddresUIState extends State<MyAddresUI> {
       isLoading = false;
       showAddress = false;
     });
+
+    fetchAddress();
   }
 
   Future<void> removeAddress(String addId) async {
@@ -136,19 +138,40 @@ class _MyAddresUIState extends State<MyAddresUI> {
                           label: 'Add new address'),
                 ),
                 height20,
-                Text(
-                  'Recently added addresses',
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                height10,
-                ListView.builder(
-                  itemCount: UserData.addresses.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return addressCard(index, UserData.addresses[index]);
-                  },
-                ),
+                UserData.addresses.isEmpty
+                    ? Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              'lib/assets/icons/no-address.svg',
+                              height: sdp(context, 300),
+                            ),
+                            height10,
+                            Text('No addresses found!'),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Recently added addresses',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          height15,
+                          ListView.builder(
+                            itemCount: UserData.addresses.length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return addressCard(
+                                  index, UserData.addresses[index]);
+                            },
+                          ),
+                        ],
+                      ),
               ],
             ),
           ),

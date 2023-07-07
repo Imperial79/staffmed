@@ -5,9 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';
 
-import '../screens/cartUI.dart';
-import 'constants.dart';
-
 SizedBox get height5 => SizedBox(height: 5);
 SizedBox get height10 => SizedBox(height: 10);
 SizedBox get height15 => SizedBox(height: 15);

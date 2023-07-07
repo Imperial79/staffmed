@@ -1,8 +1,11 @@
+import 'dart:developer';
+import 'dart:typed_data';
 import 'package:apollo/screens/Prescription%20Screens/confirmPrescriptionUI.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UploadPresUI extends StatefulWidget {
   const UploadPresUI({super.key});
@@ -12,6 +15,34 @@ class UploadPresUI extends StatefulWidget {
 }
 
 class _UploadPresUIState extends State<UploadPresUI> {
+  // List<Uint8List>? _imageList = null;
+  // List<XFile>? imgData;
+  List<Uint8List>? _imageList = [];
+  XFile? imgData;
+  bool isLoading = false;
+
+  pickImage() async {
+    imgData = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (imgData != null) {
+      _imageList!.add(await imgData!.readAsBytes());
+      setState(() {});
+    }
+
+    // print(_imageList);
+
+    // imgData = await ImagePicker().pickMultiImage();
+    // // print(imgData);
+    // imgData!.forEach((element) async {
+    //   _imageList!.add(await element.readAsBytes());
+    // });
+
+    // log(_imageList.toString());
+    // _imageList = await imgData!.readAsBytes();
+    // if (mounted) {
+    //   setState(() {});
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,47 +63,59 @@ class _UploadPresUIState extends State<UploadPresUI> {
                 style: TextStyle(fontWeight: FontWeight.w400),
               ),
               height20,
-              Center(
-                child: SvgPicture.asset(
-                  'lib/assets/icons/prescription.svg',
-                  height: sdp(context, 150),
-                ),
-              ),
+              _imageList!.isEmpty
+                  ? Center(
+                      child: SvgPicture.asset(
+                        'lib/assets/icons/prescription.svg',
+                        height: sdp(context, 150),
+                      ),
+                    )
+                  : SizedBox(),
               height20,
-              Center(
-                child: Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  alignment: WrapAlignment.center,
-                  runAlignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    presImage(context),
-                    presImage(context),
-                    // presImage(context),
-                    // presImage(context),
-                  ],
-                ),
-              ),
-              height10,
-              Center(
-                child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Upload more prescription',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
+              _imageList!.isNotEmpty
+                  ? Column(
+                      children: [
+                        Center(
+                          child: Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              alignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: List.generate(
+                                  _imageList!.length,
+                                  (index) =>
+                                      presImage(context, _imageList![index]))),
+                        ),
+                        height10,
+                        TextButton(
+                          onPressed: () {
+                            pickImage();
+                          },
+                          child: Text(
+                            'Upload more prescription',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
               height20,
               ElevatedButton(
                 onPressed: () {
-                  navPush(context, ConfirmPrescriptionUI());
+                  // navPush(context, ConfirmPrescriptionUI());
+                  if (_imageList!.isEmpty) {
+                    pickImage();
+                  } else {
+                    navPush(context, ConfirmPrescriptionUI());
+                    _imageList = [];
+                    setState(() {});
+                  }
                 },
                 child: Container(
                   width: double.infinity,
                   child: Text(
-                    'Upload prescription',
+                    _imageList!.isEmpty ? 'Upload prescription' : 'Proceed',
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -96,7 +139,7 @@ class _UploadPresUIState extends State<UploadPresUI> {
     );
   }
 
-  Container presImage(BuildContext context) {
+  Widget presImage(BuildContext context, final image) {
     return Container(
       padding: EdgeInsets.all(6),
       height: sdp(context, 140),
@@ -105,19 +148,25 @@ class _UploadPresUIState extends State<UploadPresUI> {
         borderRadius: BorderRadius.circular(15),
         border: Border.all(color: Colors.grey),
         image: DecorationImage(
-          image: NetworkImage(
-              'https://www.myopd.in/blog/wp-content/uploads/2020/02/myopd-sample-rx-eng.png'),
+          image: MemoryImage(image),
         ),
       ),
       alignment: Alignment.topRight,
-      child: CircleAvatar(
-        backgroundColor: Colors.black,
-        radius: 13,
-        child: FittedBox(
-          child: Icon(
-            Icons.close,
-            size: 15,
-            color: Colors.white,
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _imageList = [];
+          });
+        },
+        child: CircleAvatar(
+          backgroundColor: Colors.black,
+          radius: 13,
+          child: FittedBox(
+            child: Icon(
+              Icons.close,
+              size: 15,
+              color: Colors.white,
+            ),
           ),
         ),
       ),

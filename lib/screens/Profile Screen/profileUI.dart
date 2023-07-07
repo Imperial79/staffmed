@@ -137,35 +137,37 @@ class _ProfileUIState extends State<ProfileUI> {
     required String label,
     double? size,
   }) {
-    return InkWell(
-      highlightColor: Colors.transparent,
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        margin: EdgeInsets.only(bottom: 10),
-        child: Row(
-          children: [
-            icon != null
-                ? Container(
-                    width: sdp(context, 50),
-                    padding: EdgeInsets.only(right: 20.0),
-                    child: SvgPicture.asset(
-                      'lib/assets/icons/$icon.svg',
-                      height: sdp(context, size ?? 20),
-                    ),
-                  )
-                : SizedBox(),
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(fontWeight: FontWeight.w600),
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10),
+      child: InkWell(
+        highlightColor: Colors.transparent,
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              icon != null
+                  ? Container(
+                      width: sdp(context, 50),
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: SvgPicture.asset(
+                        'lib/assets/icons/$icon.svg',
+                        height: sdp(context, size ?? 20),
+                      ),
+                    )
+                  : SizedBox(),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 13,
-            )
-          ],
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 13,
+              )
+            ],
+          ),
         ),
       ),
     );

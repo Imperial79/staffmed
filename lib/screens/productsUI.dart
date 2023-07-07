@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../utils/colors.dart';
 import '../utils/sdp.dart';
-import 'cartUI.dart';
+import 'Cart screens/cartUI.dart';
 
 class ProductsUI extends StatefulWidget {
   const ProductsUI({super.key});

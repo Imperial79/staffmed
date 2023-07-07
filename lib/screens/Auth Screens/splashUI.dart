@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:apollo/screens/dashboardUI.dart';
 import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
