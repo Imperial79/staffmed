@@ -1,6 +1,7 @@
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
 import 'package:apollo/screens/dashboardUI.dart';
 import 'package:apollo/utils/components.dart';
+import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,8 @@ class _CheckoutUIState extends State<CheckoutUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: kBackButton(context),
+        // leading: kBackButton(context),
+        automaticallyImplyLeading: false,
         title: kAppbarTitle(context, title: 'Checkout'),
       ),
       body: SingleChildScrollView(
@@ -28,7 +30,9 @@ class _CheckoutUIState extends State<CheckoutUI> {
             Text(
               'Your order Id is',
               style: TextStyle(
-                  fontWeight: FontWeight.w500, fontSize: sdp(context, 11)),
+                fontWeight: FontWeight.w500,
+                fontSize: sdp(context, 11),
+              ),
             ),
             Text(
               widget.orderId,
@@ -45,10 +49,14 @@ class _CheckoutUIState extends State<CheckoutUI> {
                   fontWeight: FontWeight.w500, fontSize: sdp(context, 15)),
             ),
             height20,
-            Image.network(
-              'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/640px-QR_code_for_mobile_English_Wikipedia.svg.png',
-              width: double.infinity,
-            ),
+            Container(
+                width: double.infinity,
+                height: sdp(context, 180),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/640px-QR_code_for_mobile_English_Wikipedia.svg.png',
+                )))),
             height20,
             Center(
               child: Text(
@@ -64,13 +72,32 @@ class _CheckoutUIState extends State<CheckoutUI> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: KOutlinedButton.expanded(
-              onPressed: () {
-                navPopUntilPush(context, DashboardUI());
-                navPush(context, OrdersUI());
-              },
-              label: 'Go to orders'),
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              kSubmitButton(
+                context,
+                onTap: () {
+                  cartProductIds = [];
+                  cartProducts = [];
+                  stockMap = {};
+                  navPopUntilPush(context, DashboardUI());
+                },
+                label: 'Continue shopping',
+              ),
+              KOutlinedButton.expanded(
+                onPressed: () {
+                  cartProductIds = [];
+                  cartProducts = [];
+                  stockMap = {};
+                  navPopUntilPush(context, DashboardUI());
+                  navPush(context, OrdersUI());
+                },
+                label: 'Go to orders',
+              ),
+            ],
+          ),
         ),
       ),
     );

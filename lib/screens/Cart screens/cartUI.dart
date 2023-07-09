@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:apollo/screens/Cart%20screens/checkoutUI.dart';
 import 'package:apollo/screens/Cart%20screens/dateAndTimeUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/utils/colors.dart';

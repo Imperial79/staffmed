@@ -22,16 +22,28 @@ class _DateAndTimeUIState extends State<DateAndTimeUI> {
   bool isLoading = false;
   String selectedTime = '6:00 AM';
   String selectedDate = '';
+  String dateRange = '';
 
   getOrderId() async {
     setState(() {
       isLoading = true;
     });
+    Map add = UserData.addresses[defaultAddress];
+    String formattedAddress = add['recipient'] +
+        ', ' +
+        add['phone'] +
+        ',' +
+        add['address'] +
+        ' - ' +
+        add['pincode'];
     var dataResult = await ApiCallback(uri: '/orders/place-order.php', body: {
       'userId': UserData.id,
       'amount': widget.totalPayable,
       'productArray': jsonEncode(cartProducts),
       'quantityArray': jsonEncode(stockMap),
+      'orderTimeSlot': selectedTime,
+      'orderDateRange': dateRange,
+      'shippingAddress': formattedAddress,
     });
     print(dataResult);
     if (!dataResult['error']) {
@@ -77,10 +89,12 @@ class _DateAndTimeUIState extends State<DateAndTimeUI> {
                   padding: EdgeInsets.all(8.0),
                   child: CalenderPicker(
                     DateTime.now(),
+                    daysCount: 6,
                     height: sdp(context, 70),
                     selectionColor: primaryColor,
                     onDateChange: (date) {
                       setState(() {
+                        dateRange = date.toString().split(' ').first;
                         selectedDate = DateFormat('d MMMM').format(date);
                       });
                     },

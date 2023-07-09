@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 import 'package:apollo/screens/Prescription%20Screens/confirmPrescriptionUI.dart';
 import 'package:apollo/utils/components.dart';
