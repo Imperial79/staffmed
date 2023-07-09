@@ -45,9 +45,9 @@ class _DashboardUIState extends State<DashboardUI> {
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 100,
-                spreadRadius: 10,
+                color: primaryColorAccent,
+                blurRadius: 20,
+                spreadRadius: 2,
               ),
             ],
           ),

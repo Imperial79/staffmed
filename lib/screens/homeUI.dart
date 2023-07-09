@@ -180,8 +180,9 @@ class _HomeUIState extends State<HomeUI> {
                 Text(
                   'Save upto 25%',
                   style: TextStyle(
-                      color: Colors.green.shade600,
-                      fontWeight: FontWeight.w500),
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),

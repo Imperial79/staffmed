@@ -14,8 +14,6 @@ class UploadPresUI extends StatefulWidget {
 }
 
 class _UploadPresUIState extends State<UploadPresUI> {
-  // List<Uint8List>? _imageList = null;
-  // List<XFile>? imgData;
   List<Uint8List>? _imageList = [];
   XFile? imgData;
   bool isLoading = false;
@@ -26,25 +24,15 @@ class _UploadPresUIState extends State<UploadPresUI> {
       _imageList!.add(await imgData!.readAsBytes());
       setState(() {});
     }
-
-    // print(_imageList);
-
-    // imgData = await ImagePicker().pickMultiImage();
-    // // print(imgData);
-    // imgData!.forEach((element) async {
-    //   _imageList!.add(await element.readAsBytes());
-    // });
-
-    // log(_imageList.toString());
-    // _imageList = await imgData!.readAsBytes();
-    // if (mounted) {
-    //   setState(() {});
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: kAppbarTitle(context, title: 'Order by prescription'),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(15),

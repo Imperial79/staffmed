@@ -167,8 +167,7 @@ void ShowSnackBar(
 }) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      backgroundColor:
-          isDanger! ? const Color.fromARGB(255, 168, 28, 28) : primaryColor,
+      backgroundColor: isDanger! ? kDangerColor : primaryColor,
       dismissDirection: DismissDirection.vertical,
       content: Text(
         content,
@@ -200,6 +199,8 @@ class KOutlinedButton {
       style: ElevatedButton.styleFrom(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        enableFeedback: false,
+        shadowColor: Colors.transparent,
         foregroundColor: kButtonColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(7),
@@ -218,6 +219,8 @@ class KOutlinedButton {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         elevation: 0,
+        enableFeedback: false,
+        shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
         foregroundColor: kButtonColor,
         shape: RoundedRectangleBorder(

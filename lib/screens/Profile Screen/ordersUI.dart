@@ -16,7 +16,6 @@ class OrdersUI extends StatefulWidget {
 
 class _OrdersUIState extends State<OrdersUI> {
   bool isLoading = false;
-  bool seeAll = false;
   List seeAllList = [];
 
   @override
@@ -121,10 +120,11 @@ class _OrdersUIState extends State<OrdersUI> {
             Text(
               status,
               style: TextStyle(
-                  color: status == 'Delivered'
-                      ? Colors.green.shade700
-                      : Color.fromARGB(255, 208, 156, 35),
-                  fontWeight: FontWeight.w600),
+                color: status == 'Delivered'
+                    ? Colors.green.shade700
+                    : Color.fromARGB(255, 208, 156, 35),
+                fontWeight: FontWeight.w600,
+              ),
             ),
             height10,
             ListView.builder(
@@ -143,8 +143,6 @@ class _OrdersUIState extends State<OrdersUI> {
               child: InkWell(
                 onTap: () {
                   setState(() {
-                    // seeAll = !seeAll;
-
                     if (seeAllList.contains(data['id'])) {
                       seeAllList.remove(data['id']);
                     } else {
@@ -160,27 +158,48 @@ class _OrdersUIState extends State<OrdersUI> {
                   child: Text(
                     seeAllList.contains(data['id']) ? 'See Less' : 'See All',
                     style: TextStyle(
-                        fontSize: sdp(context, 8),
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white),
+                      fontSize: sdp(context, 8),
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
             Divider(),
-            // height10,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Order sub-total',
+                  'Order total',
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   "₹ " + data['amount'],
                   style: TextStyle(fontWeight: FontWeight.w600),
-                )
+                ),
               ],
+            ),
+            Divider(),
+            height10,
+            Visibility(
+              visible: seeAllList.contains(data['id']),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Shipping Address',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: sdp(context, 10)),
+                  ),
+                  Text(
+                    data['shippingAddress'],
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: sdp(context, 8)),
+                  ),
+                ],
+              ),
             ),
             height10,
             KOutlinedButton.expanded(onPressed: () {}, label: 'Invoice'),
@@ -233,24 +252,11 @@ class _OrdersUIState extends State<OrdersUI> {
             ),
           ),
           width10,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "- ₹ " + data['discount'],
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: sdp(context, 10),
-                  color: Colors.green.shade700,
-                ),
-              ),
-              Text(
-                "₹ " + data['salePrice'],
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          Text(
+            "₹ " + data['salePrice'],
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
           )
         ],
       ),

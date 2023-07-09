@@ -1,3 +1,4 @@
+import 'package:apollo/screens/Profile%20Screen/aboutusUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
 import 'package:apollo/utils/colors.dart';
@@ -65,15 +66,20 @@ class _ProfileUIState extends State<ProfileUI> {
                         size: 25,
                         label: 'My Addresses',
                       ),
-                      settingsTile(
-                        onTap: () {},
-                        icon: 'order',
-                        label: 'My Orders',
-                      ),
+                      // settingsTile(
+                      //   onTap: () {},
+                      //   icon: 'order',
+                      //   label: 'My Orders',
+                      // ),
                       height10,
                       Divider(),
                       height10,
-                      settingsTile(label: 'About Us'),
+                      settingsTile(
+                        onTap: () {
+                          navPush(context, AboutusUI());
+                        },
+                        label: 'About Us',
+                      ),
                       settingsTile(label: 'Privacy Policy'),
                     ],
                   ),
@@ -85,15 +91,20 @@ class _ProfileUIState extends State<ProfileUI> {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: kSubmitButton(context, onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return confirmLogout();
-              },
-            );
-          }, label: 'Log Out', buttonColor: Color.fromARGB(255, 182, 48, 38)),
+          padding: EdgeInsets.all(10.0),
+          child: kSubmitButton(
+            context,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return confirmLogout();
+                },
+              );
+            },
+            label: 'Log Out',
+            buttonColor: kDangerColor,
+          ),
         ),
       ),
     );

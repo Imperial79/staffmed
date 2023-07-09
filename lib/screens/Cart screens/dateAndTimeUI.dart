@@ -32,7 +32,7 @@ class _DateAndTimeUIState extends State<DateAndTimeUI> {
     String formattedAddress = add['recipient'] +
         ', ' +
         add['phone'] +
-        ',' +
+        ', ' +
         add['address'] +
         ' - ' +
         add['pincode'];
