@@ -26,6 +26,7 @@ class _SplashUIState extends State<SplashUI> {
 
     if (!dataResult['error']) {
       bannersList = dataResult['response'];
+      setState(() {});
     }
   }
 
@@ -91,34 +92,43 @@ class _SplashUIState extends State<SplashUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Staffmed',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: sdp(context, 30),
-                ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Text(
+            //   'Staffmed',
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.w700,
+            //     fontSize: sdp(context, 30),
+            //   ),
+            // ),
+            Image.asset('lib/assets/icons/staffmed-logo.png'),
+            // Text(
+            //   'We provide always better',
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.w500,
+            //     fontSize: sdp(context, 15),
+            //   ),
+            // ),
+            height50,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: sdp(context, 100),
+                    child: LinearProgressIndicator(
+                      color: primaryColor,
+                    ),
+                  ),
+                  height10,
+                  Text('version ' + appVersion),
+                ],
               ),
-              Text(
-                'We provide always better',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: sdp(context, 15),
-                ),
-              ),
-              height50,
-              LinearProgressIndicator(
-                color: primaryColor,
-              ),
-              height10,
-              Text('Please wait')
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );

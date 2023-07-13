@@ -1,3 +1,4 @@
+import 'package:apollo/screens/Auth%20Screens/forgotPasswordUI.dart';
 import 'package:apollo/screens/dashboardUI.dart';
 import 'package:apollo/screens/Auth%20Screens/registerUI.dart';
 import 'package:apollo/utils/colors.dart';
@@ -120,7 +121,16 @@ class _LoginUIState extends State<LoginUI> {
                     keyboardType: TextInputType.text,
                     hintText: 'Enter Password',
                   ),
-                  height50,
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                      onPressed: () {
+                        navPush(context, ForgotPasswordUI());
+                      },
+                      child: Text('Forgot Password?'),
+                    ),
+                  ),
+                  height10,
                   kSubmitButton(
                     context,
                     onTap: () {
@@ -135,7 +145,7 @@ class _LoginUIState extends State<LoginUI> {
                         navPush(context, RegisterUI());
                       },
                       child: Text(
-                        'Already have an account',
+                        'Don\'t have an account ?',
                         style: TextStyle(
                             fontWeight: FontWeight.w600, color: primaryColor),
                       ),

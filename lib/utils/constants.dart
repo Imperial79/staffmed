@@ -15,6 +15,8 @@ class UserData {
   static List<dynamic> addresses = [];
 }
 
+String appVersion = '1.1';
+
 int defaultAddress = 0;
 
 List<dynamic> cartProducts = [];

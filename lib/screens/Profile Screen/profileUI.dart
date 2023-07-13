@@ -1,12 +1,14 @@
 import 'package:apollo/screens/Profile%20Screen/aboutusUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
+import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive_flutter/adapters.dart';
 
 class ProfileUI extends StatefulWidget {
   const ProfileUI({super.key});
@@ -135,7 +137,12 @@ class _ProfileUIState extends State<ProfileUI> {
           ),
         ),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () async {
+            await Hive.deleteBoxFromDisk('userData');
+            Box userbox = await Hive.openBox('userData');
+            print(userbox.get('phone'));
+            navPopUntilPush(context, WelcomeUI());
+          },
           child: Text('Yes'),
         ),
       ],

@@ -29,6 +29,13 @@ class _ProductsUIState extends State<ProductsUI> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    searchKey.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 235, 238),
