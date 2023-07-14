@@ -44,6 +44,7 @@ class _HomeUIState extends State<HomeUI> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
+                padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: primaryColorAccent,
                   borderRadius: BorderRadius.vertical(
@@ -54,89 +55,87 @@ class _HomeUIState extends State<HomeUI> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.asset(
+                              'lib/assets/icons/staffmed-banner-white.png')),
                       height10,
-                      Image.asset('lib/assets/icons/staffmed-logo.png'),
-                      // height20,
-                      Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Hello,',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Hello,',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      UserData.fullname,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: sdp(context, 15),
                                       ),
-                                      Text(
-                                        UserData.fullname,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: sdp(context, 15),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                                width10,
-                                Badge(
-                                  backgroundColor: kButtonColor,
-                                  isLabelVisible: cartProductIds.length != 0,
-                                  label: Text(cartProductIds.length.toString()),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CartUI())).then((value) {
-                                        setState(() {});
-                                      });
-                                    },
-                                    icon: SvgPicture.asset(
-                                        'lib/assets/icons/cart.svg'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            height20,
-                            searchBar(),
-                            height20,
-                            CarouselSlider(
-                              options: CarouselOptions(
-                                height: sdp(context, 100),
-                                autoPlay: true,
-                                enlargeCenterPage: false,
-                                autoPlayInterval: Duration(seconds: 4),
-                                viewportFraction: 1,
                               ),
-                              items: List.generate(
-                                bannersList.length,
-                                (index) => CachedNetworkImage(
-                                  imageUrl: bannersList[index]['image'],
-                                  imageBuilder: (context, imageProvider) {
-                                    return Container(
-                                      margin: EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
+                              width10,
+                              Badge(
+                                backgroundColor: kButtonColor,
+                                isLabelVisible: cartProductIds.length != 0,
+                                label: Text(cartProductIds.length.toString()),
+                                child: IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => CartUI()))
+                                        .then((value) {
+                                      setState(() {});
+                                    });
                                   },
+                                  icon: SvgPicture.asset(
+                                      'lib/assets/icons/cart.svg'),
                                 ),
                               ),
+                            ],
+                          ),
+                          height20,
+                          searchBar(),
+                          height20,
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              height: sdp(context, 100),
+                              autoPlay: true,
+                              enlargeCenterPage: false,
+                              autoPlayInterval: Duration(seconds: 4),
+                              viewportFraction: 1,
                             ),
-                          ],
-                        ),
+                            items: List.generate(
+                              bannersList.length,
+                              (index) => CachedNetworkImage(
+                                imageUrl: bannersList[index]['image'],
+                                imageBuilder: (context, imageProvider) {
+                                  return Container(
+                                    margin: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: imageProvider,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

@@ -96,21 +96,9 @@ class _SplashUIState extends State<SplashUI> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Text(
-            //   'Staffmed',
-            //   style: TextStyle(
-            //     fontWeight: FontWeight.w700,
-            //     fontSize: sdp(context, 30),
-            //   ),
-            // ),
-            Image.asset('lib/assets/icons/staffmed-logo.png'),
-            // Text(
-            //   'We provide always better',
-            //   style: TextStyle(
-            //     fontWeight: FontWeight.w500,
-            //     fontSize: sdp(context, 15),
-            //   ),
-            // ),
+            Center(
+                child:
+                    Image.asset('lib/assets/icons/staffmed-banner-white.png')),
             height50,
             Padding(
               padding: const EdgeInsets.all(8.0),
