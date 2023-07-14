@@ -15,7 +15,7 @@ class UserData {
   static List<dynamic> addresses = [];
 }
 
-String appVersion = '1.1';
+String appVersion = '1.0.2';
 
 int defaultAddress = 0;
 
