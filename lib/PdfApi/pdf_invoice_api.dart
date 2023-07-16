@@ -224,16 +224,6 @@ class PdfInvoiceApi {
                 children: [
                   Text("Invoice QR Code"),
                   SizedBox(height: 0.3 * PdfPageFormat.cm),
-                  // Container(
-                  //   height: 50,
-                  //   width: 50,
-                  //   child: BarcodeWidget(
-                  //     barcode: Barcode.qrCode(),
-                  //     data: "https://aryagold.co.in/orderInvoice?orderId=" +
-                  //         orderDetail['orderId'],
-                  //   ),
-                  // ),
-                  SizedBox(height: 0.3 * PdfPageFormat.cm),
                   Text(
                     "TERMS & CONDITIONS:",
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -249,22 +239,22 @@ class PdfInvoiceApi {
                 ],
               ),
             ),
-            Container(
-              child: Column(
-                children: [
-                  Image(
-                    MemoryImage(
-                      authSign,
-                    ),
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(width: 3 * PdfPageFormat.mm),
-                  Text("AUTHORISED SIGNATORY FOR\nArya Gold & Jewellery"),
-                ],
-              ),
-            )
+            // Container(
+            //   child: Column(
+            //     children: [
+            //       Image(
+            //         MemoryImage(
+            //           authSign,
+            //         ),
+            //         width: 80,
+            //         height: 80,
+            //         fit: BoxFit.contain,
+            //       ),
+            //       SizedBox(width: 3 * PdfPageFormat.mm),
+            //       Text("AUTHORISED SIGNATORY FOR\nStaffmed"),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       ]);
@@ -275,7 +265,7 @@ class PdfInvoiceApi {
           Divider(),
           SizedBox(height: 2 * PdfPageFormat.mm),
           buildSimpleText(
-              title: 'Visit our website', value: "https://aryagold.co.in"),
+              title: 'Visit our website', value: "https://staffmed.co.in"),
         ],
       );
 
