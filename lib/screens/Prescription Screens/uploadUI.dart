@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import 'package:apollo/screens/Prescription%20Screens/confirmPrescriptionUI.dart';
+import 'package:apollo/screens/Prescription%20Screens/prescriptionCheckoutUI.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +15,14 @@ class UploadPresUI extends StatefulWidget {
 
 class _UploadPresUIState extends State<UploadPresUI> {
   List<Uint8List>? _imageList = [];
+  List<XFile> imgDataList = [];
   XFile? imgData;
   bool isLoading = false;
 
   pickImage() async {
     imgData = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (imgData != null) {
+      imgDataList.add(imgData!);
       _imageList!.add(await imgData!.readAsBytes());
       setState(() {});
     }
@@ -64,15 +66,17 @@ class _UploadPresUIState extends State<UploadPresUI> {
                       children: [
                         Center(
                           child: Wrap(
-                              spacing: 10,
-                              runSpacing: 10,
-                              alignment: WrapAlignment.center,
-                              runAlignment: WrapAlignment.center,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: List.generate(
-                                  _imageList!.length,
-                                  (index) =>
-                                      presImage(context, _imageList![index]))),
+                            spacing: 10,
+                            runSpacing: 10,
+                            alignment: WrapAlignment.center,
+                            runAlignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: List.generate(
+                              _imageList!.length,
+                              (index) =>
+                                  presImage(context, _imageList![index], index),
+                            ),
+                          ),
                         ),
                         height10,
                         TextButton(
@@ -94,9 +98,14 @@ class _UploadPresUIState extends State<UploadPresUI> {
                   if (_imageList!.isEmpty) {
                     pickImage();
                   } else {
-                    navPush(context, ConfirmPrescriptionUI());
-                    _imageList = [];
-                    setState(() {});
+                    navPush(
+                        context,
+                        PresCheckoutUI(
+                          imageDataList: imgDataList,
+                        ));
+                    // uploadImages();
+                    // _imageList = [];
+                    // setState(() {});
                   }
                 },
                 child: Container(
@@ -126,7 +135,7 @@ class _UploadPresUIState extends State<UploadPresUI> {
     );
   }
 
-  Widget presImage(BuildContext context, final image) {
+  Widget presImage(BuildContext context, final image, int index) {
     return Container(
       padding: EdgeInsets.all(6),
       height: sdp(context, 140),
@@ -142,7 +151,8 @@ class _UploadPresUIState extends State<UploadPresUI> {
       child: GestureDetector(
         onTap: () {
           setState(() {
-            _imageList = [];
+            _imageList!.removeAt(index);
+            imgDataList.removeAt(index);
           });
         },
         child: CircleAvatar(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:apollo/screens/Cart%20screens/paymentUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
@@ -8,17 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../utils/constants.dart';
-import 'checkoutUI.dart';
 
-class DateAndTimeUI extends StatefulWidget {
+class ordersCheckoutUI extends StatefulWidget {
   final String totalPayable;
-  const DateAndTimeUI({super.key, required this.totalPayable});
+  const ordersCheckoutUI({super.key, required this.totalPayable});
 
   @override
-  State<DateAndTimeUI> createState() => _DateAndTimeUIState();
+  State<ordersCheckoutUI> createState() => _ordersCheckoutUIState();
 }
 
-class _DateAndTimeUIState extends State<DateAndTimeUI> {
+class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
   bool isLoading = false;
   String selectedTime = '6:00 AM';
   String selectedDate = '';
@@ -49,7 +49,7 @@ class _DateAndTimeUIState extends State<DateAndTimeUI> {
     if (!dataResult['error']) {
       navPush(
           context,
-          CheckoutUI(
+          PaymentUI(
             orderId: dataResult['referenceId'],
           ));
     }

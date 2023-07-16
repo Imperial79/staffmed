@@ -5,15 +5,15 @@ import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 
-class CheckoutUI extends StatefulWidget {
+class PaymentUI extends StatefulWidget {
   final String orderId;
-  const CheckoutUI({super.key, required this.orderId});
+  const PaymentUI({super.key, required this.orderId});
 
   @override
-  State<CheckoutUI> createState() => _CheckoutUIState();
+  State<PaymentUI> createState() => _PaymentUIState();
 }
 
-class _CheckoutUIState extends State<CheckoutUI> {
+class _PaymentUIState extends State<PaymentUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

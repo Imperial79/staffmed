@@ -1,6 +1,7 @@
 import 'package:apollo/screens/Profile%20Screen/aboutusUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
+import 'package:apollo/screens/Profile%20Screen/presOrdersUI.dart';
 import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
@@ -55,7 +56,9 @@ class _ProfileUIState extends State<ProfileUI> {
                         label: 'My Orders',
                       ),
                       settingsTile(
-                        onTap: () {},
+                        onTap: () {
+                          navPush(context, PresOrdersUI());
+                        },
                         icon: 'presOrder',
                         size: 25,
                         label: 'Prescription Orders',

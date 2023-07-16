@@ -1,4 +1,4 @@
-import 'package:apollo/screens/Cart%20screens/dateAndTimeUI.dart';
+import 'package:apollo/screens/Cart%20screens/ordersCheckoutUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
@@ -296,7 +296,7 @@ class _CartUIState extends State<CartUI> {
                         } else {
                           navPush(
                             context,
-                            DateAndTimeUI(
+                            ordersCheckoutUI(
                                 totalPayable: totalPayable.toStringAsFixed(2)),
                           );
                         }

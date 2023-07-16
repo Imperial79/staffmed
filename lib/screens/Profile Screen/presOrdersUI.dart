@@ -1,24 +1,25 @@
 import 'dart:developer';
 
-import 'package:apollo/screens/Cart%20screens/paymentUI.dart';
-import 'package:apollo/utils/colors.dart';
-import 'package:apollo/utils/components.dart';
-import 'package:apollo/utils/constants.dart';
-import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class OrdersUI extends StatefulWidget {
-  const OrdersUI({super.key});
+import '../../PdfApi/pdf_invoice_api.dart';
+import '../../utils/colors.dart';
+import '../../utils/components.dart';
+import '../../utils/constants.dart';
+import '../../utils/sdp.dart';
+import '../Cart screens/paymentUI.dart';
+
+class PresOrdersUI extends StatefulWidget {
+  const PresOrdersUI({super.key});
 
   @override
-  State<OrdersUI> createState() => _OrdersUIState();
+  State<PresOrdersUI> createState() => _PresOrdersUIState();
 }
 
-class _OrdersUIState extends State<OrdersUI> {
+class _PresOrdersUIState extends State<PresOrdersUI> {
   bool isLoading = false;
   List seeAllList = [];
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +31,7 @@ class _OrdersUIState extends State<OrdersUI> {
       isLoading = true;
     });
     var dataResult = await ApiCallback(
-      uri: '/orders/fetch-order-history.php',
+      uri: '/orders/fetch-prescription-order-history.php',
       body: {
         'userId': UserData.id,
       },
@@ -39,7 +40,7 @@ class _OrdersUIState extends State<OrdersUI> {
     // log(dataResult['response'][0].toString());
 
     if (!dataResult['error']) {
-      orderHistoryList = dataResult['response'];
+      presOrderHistoryList = dataResult['response'];
       setState(() {});
     }
     setState(() {
@@ -73,11 +74,11 @@ class _OrdersUIState extends State<OrdersUI> {
                 ),
                 height20,
                 ListView.builder(
-                  itemCount: orderHistoryList.length,
+                  itemCount: presOrderHistoryList.length,
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return ordersTile(orderHistoryList[index]);
+                    return ordersTile(presOrderHistoryList[index]);
                   },
                 )
               ],
@@ -129,14 +130,14 @@ class _OrdersUIState extends State<OrdersUI> {
             ),
             height10,
             ListView.builder(
-              itemCount: data['orderedProducts'].length > 2 &&
+              itemCount: data['medicines'].length > 2 &&
                       !seeAllList.contains(data['id'])
                   ? 2
-                  : data['orderedProducts'].length,
+                  : data['medicines'].length,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return orderedProductTile(data['orderedProducts'][index]);
+                return orderedProductTile(data['medicines'][index]);
               },
             ),
             Align(
@@ -207,7 +208,13 @@ class _OrdersUIState extends State<OrdersUI> {
               children: [
                 Expanded(
                     child: KOutlinedButton.expanded(
-                        onPressed: () {}, label: 'Invoice')),
+                        onPressed: () async {
+                          final pdfFile = await PdfInvoiceApi.generate(
+                            {},
+                          );
+                          PdfInvoiceApi.openFile(pdfFile);
+                        },
+                        label: 'Invoice')),
                 data['isPaid'] == 'Pending'
                     ? Padding(
                         padding: EdgeInsets.only(left: 10.0),
@@ -235,17 +242,17 @@ class _OrdersUIState extends State<OrdersUI> {
           Expanded(
             child: Row(
               children: [
-                Container(
-                  width: sdp(context, 50),
-                  height: sdp(context, 40),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        data['image'],
-                      ),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   width: sdp(context, 50),
+                //   height: sdp(context, 40),
+                //   decoration: BoxDecoration(
+                //     image: DecorationImage(
+                //       image: NetworkImage(
+                //         data['image'],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 width10,
                 Expanded(
                   child: Column(

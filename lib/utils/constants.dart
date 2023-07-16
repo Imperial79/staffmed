@@ -25,6 +25,7 @@ List<dynamic> searchedProductList = [];
 List<dynamic> bannersList = [];
 Map<String, dynamic> stockMap = {};
 List<dynamic> orderHistoryList = [];
+List<dynamic> presOrderHistoryList = [];
 
 String baseUrl = 'https://indiatvonline.in/staffmed/apis';
 
