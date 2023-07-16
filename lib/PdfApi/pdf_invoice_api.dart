@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file_plus/open_file_plus.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
 class PdfInvoiceApi {
-  // static var orderDetail;
-  static Future<File> generate(var orderDetail) async {
-    // final ByteData companyLogoBytes =
-    //     await rootBundle.load('./lib/assets/images/arLogo.png');
-    // final Uint8List companyLogo = companyLogoBytes.buffer.asUint8List();
+  static var orderDetail;
+  static Future<File> generate(Map<dynamic, dynamic> data) async {
+    final ByteData companyLogoBytes =
+        await rootBundle.load('./lib/assets/icons/staffmed-banner.png');
+    final Uint8List companyLogo = companyLogoBytes.buffer.asUint8List();
 
     // final ByteData authSignBytes =
     //     await rootBundle.load('./lib/assets/images/authsign.png');
@@ -20,7 +20,8 @@ class PdfInvoiceApi {
     // var response = await get(Uri.parse(url));
     // var data = response.bodyBytes;
 
-    // PdfInvoiceApi.orderDetail = orderDetail;
+    PdfInvoiceApi.orderDetail = data;
+    print(PdfInvoiceApi.orderDetail);
 
     final pdf = Document();
 
@@ -28,14 +29,15 @@ class PdfInvoiceApi {
       pageFormat: PdfPageFormat.a4,
       margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
       build: (context) => [
-        // buildHeader(companyLogo),
+        buildHeader(companyLogo),
         buildInvoiceDetails(),
         buildInvoiceTable(),
         // buildOtherInfo(authSign),
       ],
       footer: (context) => buildFooter(),
     ));
-    return saveDocument(name: 'Invoice_' + 'ABCD' + '.pdf', pdf: pdf);
+    return saveDocument(
+        name: 'Invoice_' + orderDetail['refId'] + '.pdf', pdf: pdf);
   }
 
   static Future<File> saveDocument({
@@ -62,20 +64,12 @@ class PdfInvoiceApi {
           Row(
             children: [
               Image(
-                MemoryImage(
-                  companyLogo,
-                ),
-                width: 20,
-                height: 20,
-                fit: BoxFit.cover,
-              ),
-              SizedBox(width: 3 * PdfPageFormat.mm),
-              Text(
-                "Staffmed",
-                style: TextStyle(fontSize: 20),
+                MemoryImage(companyLogo),
+                width: 120,
               ),
             ],
           ),
+          SizedBox(height: 10),
           Text(
             "Kolkata",
             style: TextStyle(fontSize: 10),
@@ -83,13 +77,12 @@ class PdfInvoiceApi {
           Row(
             children: [
               Text(
-                "1800 876 6678",
+                "Contact: 1800 876 6678",
                 style: TextStyle(fontSize: 10),
               ),
-              // SizedBox(width: 0.3 * PdfPageFormat.cm),
               Spacer(),
               Text(
-                "GSTIN: GSXP2Y10098",
+                "GSTIN: <GST Code Here>",
                 style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
               ),
             ],
@@ -103,8 +96,10 @@ class PdfInvoiceApi {
         children: [
           TableHelper.fromTextArray(
             headers: [
-              'Order Id: !Dskjhdajhd',
-              'Invoice Date: 12 Jul, 2023',
+              'Order Id: ' + PdfInvoiceApi.orderDetail['refId'],
+              'Invoice Date: ' +
+                  DateFormat('yMMMd').format(
+                      DateTime.parse(PdfInvoiceApi.orderDetail['date'])),
             ],
             data: [],
             border: null,
@@ -119,51 +114,67 @@ class PdfInvoiceApi {
           SizedBox(height: 0.5 * PdfPageFormat.cm),
           buildText(title: "Bill To", value: ""),
           SizedBox(height: 0.3 * PdfPageFormat.cm),
-          Text("Avishek", style: TextStyle(fontWeight: FontWeight.bold)),
-          Text("Aesby More"),
-          Text("Mobile: 9093047658"),
+          Text(
+            PdfInvoiceApi.orderDetail['shippingAddress'],
+            style: TextStyle(
+              fontWeight: FontWeight.normal,
+            ),
+          ),
           Divider()
         ],
       );
 
-  static Widget buildInvoiceTable() => Column(children: [
-        // Invoice Table
-        TableHelper.fromTextArray(
-          headers: [
-            'Name',
-            'Dose',
-            'Quantity',
-            'Sale price',
-            'Discount',
-            'Total',
-          ],
-          data: [
-            [
-              "Paracetamol\nDelta",
-              '20mg',
-              '1pc',
-              'Rs. 200',
-              'Applied',
-              'Rs. 190',
-            ]
-          ],
-          border: null,
-          headerStyle: TextStyle(fontWeight: FontWeight.bold),
-          headerDecoration: BoxDecoration(color: PdfColors.grey300),
-          cellHeight: 30,
-          cellAlignments: {
-            0: Alignment.centerLeft,
-            1: Alignment.center,
-            2: Alignment.centerRight,
-            3: Alignment.centerRight,
-            4: Alignment.centerRight,
-            5: Alignment.centerRight,
-          },
-        ),
-        Divider(),
-        buildTotal(),
-        Divider(),
-      ]);
+  static Widget buildInvoiceTable() => Column(
+        children: [
+          // Invoice Table
+          TableHelper.fromTextArray(
+            headers: [
+              'Name',
+              'Dose',
+              'Quantity',
+              'Sale price',
+              'Discount',
+              'Total',
+            ],
+            data: [
+              for (int i = 0;
+                  i < PdfInvoiceApi.orderDetail['medicines'].length;
+                  i++)
+                [
+                  PdfInvoiceApi.orderDetail['medicines'][i]['name'] +
+                      "\n" +
+                      PdfInvoiceApi.orderDetail['medicines'][i]['company'],
+                  PdfInvoiceApi.orderDetail['medicines'][i]['dose'] + "mg",
+                  PdfInvoiceApi.orderDetail['medicines'][i]['quantity'],
+                  "Rs. " +
+                      PdfInvoiceApi.orderDetail['medicines'][i]['salePrice'],
+                  'Applied',
+                  "Rs. " +
+                      (double.parse(PdfInvoiceApi.orderDetail['medicines'][i]
+                                  ['salePrice']) *
+                              double.parse(PdfInvoiceApi
+                                  .orderDetail['medicines'][i]['quantity']))
+                          .toString(),
+                ]
+            ],
+            border: null,
+            headerStyle: TextStyle(fontWeight: FontWeight.bold),
+            headerDecoration: BoxDecoration(color: PdfColors.grey300),
+            cellHeight: 30,
+            cellAlignments: {
+              0: Alignment.centerLeft,
+              1: Alignment.center,
+              2: Alignment.centerRight,
+              3: Alignment.centerRight,
+              4: Alignment.centerRight,
+              5: Alignment.centerRight,
+            },
+          ),
+          Divider(),
+          buildTotal(),
+          Divider(),
+        ],
+      );
 
   static Widget buildTotal() {
     return Container(
@@ -178,45 +189,22 @@ class PdfInvoiceApi {
               children: [
                 buildText(
                   title: 'Net total',
-                  value: 'Rs. 190',
+                  value: 'Rs. ' + PdfInvoiceApi.orderDetail['amount'],
                   unite: true,
                 ),
                 Text(
-                  '(Includes GST and Making Charge)',
+                  '(Includes GST)',
                   style: TextStyle(
                     fontSize: 10,
                     color: PdfColor.fromHex('#808080'),
                   ),
                 ),
-                SizedBox(height: 2 * PdfPageFormat.mm),
-                // Column(
-                //   children: List.generate(
-                //     orderDetail['orderPayments'].length,
-                //     (index) => buildText(
-                //       title: 'Paid ' +
-                //           orderDetail['orderPayments'][index]['txnDate']
-                //               .split(',')[0],
-                //       titleStyle: TextStyle(fontWeight: FontWeight.normal),
-                //       value: 'Rs. 100',
-                //       unite: true,
-                //     ),
-                //   ),
-                // ),
-                Divider(),
-
-                SizedBox(height: 3 * PdfPageFormat.mm),
-                Text("Invoice Amount (in words)",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                // Text(
-                //   NumberToWord()
-                //           .convert(
-                //             'en-in',
-                //             int.parse(orderDetail['amount']),
-                //           )
-                //           .toUpperCase() +
-                //       "RUPEES",
-                // ),
-                SizedBox(height: 3 * PdfPageFormat.cm),
+                // SizedBox(height: 2 * PdfPageFormat.mm),
+                // Divider(),
+                // SizedBox(height: 3 * PdfPageFormat.mm),
+                // Text("Invoice Amount (in words)",
+                //     style: TextStyle(fontWeight: FontWeight.bold)),
+                // SizedBox(height: 3 * PdfPageFormat.cm),
               ],
             ),
           ),

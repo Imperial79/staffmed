@@ -26,7 +26,7 @@ class PresCheckoutUI extends StatefulWidget {
 
 class _PresCheckoutUIState extends State<PresCheckoutUI> {
   bool isLoading = false;
-  String selectedTime = '6:00 AM';
+  String selectedTime = '6:00';
   String selectedDate = '';
   String dateRange = '';
 
@@ -128,7 +128,7 @@ class _PresCheckoutUIState extends State<PresCheckoutUI> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
-                    'Select time slot',
+                    'Available time slot(s)',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: sdp(context, 13),
@@ -143,13 +143,28 @@ class _PresCheckoutUIState extends State<PresCheckoutUI> {
                       alignment: WrapAlignment.center,
                       spacing: 10,
                       runSpacing: 10,
-                      children: [
-                        timeButton('6:00 AM'),
-                        timeButton('8:00 AM'),
-                        timeButton('2:00 PM'),
-                        timeButton('4:00 PM'),
-                        timeButton('10:00 PM'),
-                      ],
+                      children: List.generate(
+                        timeSlots.length,
+                        (index) {
+                          int adv4Hour =
+                              DateTime.now().add(Duration(hours: 4)).hour;
+
+                          if (DateTime.now().toString().split(" ").first ==
+                              dateRange) {
+                            if (adv4Hour <= timeSlots[index] && adv4Hour != 0) {
+                              selectedTime =
+                                  timeSlots[index].toString() + ":00";
+                              return timeButton(
+                                  timeSlots[index].toString() + ":00");
+                            }
+                            selectedTime = '0';
+                            return SizedBox();
+                          }
+
+                          return timeButton(
+                              timeSlots[index].toString() + ":00");
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -167,7 +182,19 @@ class _PresCheckoutUIState extends State<PresCheckoutUI> {
                 height10,
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
-                  child: deliveryAddress(context),
+                  child: UserData.addresses.isNotEmpty
+                      ? deliveryAddress(context)
+                      : KOutlinedButton.expanded(
+                          onPressed: () {
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyAddresUI()))
+                                .then((value) {
+                              setState(() {});
+                            });
+                          },
+                          label: 'Add Address'),
                 ),
               ],
             ),
@@ -178,9 +205,10 @@ class _PresCheckoutUIState extends State<PresCheckoutUI> {
           ),
         ],
       ),
-      bottomNavigationBar: selectedDate == ''
-          ? SizedBox()
-          : SafeArea(
+      bottomNavigationBar: selectedDate != '' &&
+              selectedTime != '0' &&
+              UserData.addresses.isNotEmpty
+          ? SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -222,7 +250,8 @@ class _PresCheckoutUIState extends State<PresCheckoutUI> {
                   ),
                 ],
               ),
-            ),
+            )
+          : SizedBox(),
     );
   }
 

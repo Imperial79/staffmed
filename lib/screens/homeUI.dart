@@ -1,6 +1,6 @@
 import 'package:apollo/screens/Prescription%20Screens/uploadUI.dart';
 import 'package:apollo/screens/Cart%20screens/cartUI.dart';
-import 'package:apollo/screens/productsUI.dart';
+import 'package:apollo/screens/searchProductsUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
@@ -212,7 +212,7 @@ class _HomeUIState extends State<HomeUI> {
   Widget searchBar() {
     return GestureDetector(
       onTap: () {
-        navPush(context, ProductsUI());
+        navPush(context, SearchProductsUI());
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),

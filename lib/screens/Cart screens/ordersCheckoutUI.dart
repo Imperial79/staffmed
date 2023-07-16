@@ -6,9 +6,11 @@ import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:calender_picker/calender_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 import '../../utils/constants.dart';
+import '../Profile Screen/myAddressUI.dart';
 
 class ordersCheckoutUI extends StatefulWidget {
   final String totalPayable;
@@ -20,7 +22,7 @@ class ordersCheckoutUI extends StatefulWidget {
 
 class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
   bool isLoading = false;
-  String selectedTime = '6:00 AM';
+  String selectedTime = '6:00';
   String selectedDate = '';
   String dateRange = '';
 
@@ -104,10 +106,11 @@ class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
-                    'Select time slot',
+                    'Available time slot(s)',
                     style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: sdp(context, 13)),
+                      fontWeight: FontWeight.w600,
+                      fontSize: sdp(context, 13),
+                    ),
                   ),
                 ),
                 height20,
@@ -118,15 +121,58 @@ class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
                       alignment: WrapAlignment.center,
                       spacing: 10,
                       runSpacing: 10,
-                      children: [
-                        timeButton('6:00 AM'),
-                        timeButton('8:00 AM'),
-                        timeButton('2:00 PM'),
-                        timeButton('4:00 PM'),
-                        timeButton('10:00 PM'),
-                      ],
+                      children: List.generate(
+                        timeSlots.length,
+                        (index) {
+                          int adv4Hour =
+                              DateTime.now().add(Duration(hours: 4)).hour;
+
+                          if (DateTime.now().toString().split(" ").first ==
+                              dateRange) {
+                            if (adv4Hour <= timeSlots[index] && adv4Hour != 0) {
+                              selectedTime =
+                                  timeSlots[index].toString() + ":00";
+                              return timeButton(
+                                  timeSlots[index].toString() + ":00");
+                            }
+                            selectedTime = '0';
+                            return SizedBox();
+                          }
+
+                          return timeButton(
+                              timeSlots[index].toString() + ":00");
+                        },
+                      ),
                     ),
                   ),
+                ),
+                height20,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Text(
+                    'Select address',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: sdp(context, 13),
+                    ),
+                  ),
+                ),
+                height10,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  child: UserData.addresses.isNotEmpty
+                      ? deliveryAddress(context)
+                      : KOutlinedButton.expanded(
+                          onPressed: () {
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyAddresUI()))
+                                .then((value) {
+                              setState(() {});
+                            });
+                          },
+                          label: 'Add Address'),
                 ),
               ],
             ),
@@ -137,9 +183,10 @@ class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
           ),
         ],
       ),
-      bottomNavigationBar: selectedDate == ''
-          ? SizedBox()
-          : SafeArea(
+      bottomNavigationBar: selectedDate != '' &&
+              selectedTime != '0' &&
+              UserData.addresses.isNotEmpty
+          ? SafeArea(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -170,7 +217,9 @@ class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            getOrderId();
+                            if (!isLoading) {
+                              getOrderId();
+                            }
                           },
                           child: Text('Continue'),
                         ),
@@ -179,7 +228,65 @@ class _ordersCheckoutUIState extends State<ordersCheckoutUI> {
                   ),
                 ],
               ),
+            )
+          : SizedBox(),
+    );
+  }
+
+  Widget deliveryAddress(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            SvgPicture.asset(
+              'lib/assets/icons/delivery.svg',
+              height: sdp(context, 20),
             ),
+            width10,
+            Text(
+              'Delivery to',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            width10,
+            Spacer(),
+            TextButton(
+              onPressed: () {
+                Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MyAddresUI()))
+                    .then((value) {
+                  setState(() {});
+                });
+              },
+              child: Text('Change'),
+            ),
+          ],
+        ),
+        height5,
+        Text(
+          UserData.addresses[defaultAddress]['recipient'],
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: sdp(context, 10),
+          ),
+        ),
+        Text(
+          "+91 " + UserData.addresses[defaultAddress]['phone'],
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: sdp(context, 10),
+          ),
+        ),
+        Text(
+          UserData.addresses[defaultAddress]['address'] +
+              " - " +
+              UserData.addresses[defaultAddress]['pincode'],
+          style: TextStyle(
+            // fontWeight: FontWeight.w500,
+            fontSize: sdp(context, 9),
+          ),
+        ),
+      ],
     );
   }
 

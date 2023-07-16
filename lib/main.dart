@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     systemColors();
     return MaterialApp(
+      color: Colors.white,
       title: 'Staffmed',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

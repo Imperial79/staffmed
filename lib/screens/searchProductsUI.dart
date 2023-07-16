@@ -8,23 +8,29 @@ import '../utils/colors.dart';
 import '../utils/sdp.dart';
 import 'Cart screens/cartUI.dart';
 
-class ProductsUI extends StatefulWidget {
-  const ProductsUI({super.key});
+class SearchProductsUI extends StatefulWidget {
+  const SearchProductsUI({super.key});
 
   @override
-  State<ProductsUI> createState() => _ProductsUIState();
+  State<SearchProductsUI> createState() => _SearchProductsUIState();
 }
 
-class _ProductsUIState extends State<ProductsUI> {
+class _SearchProductsUIState extends State<SearchProductsUI> {
   final searchKey = TextEditingController();
+  bool isLoading = false;
 
   searchProduct(String val) async {
+    setState(() {
+      isLoading = true;
+    });
     var dataResult = await ApiCallback(
         uri: '/products/fetch-by-search.php', body: {'searchKey': val});
     log(dataResult.toString());
     if (!dataResult['error']) {
       searchedProductList = dataResult['response'];
-      setState(() {});
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -38,35 +44,97 @@ class _ProductsUIState extends State<ProductsUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 228, 235, 238),
+      backgroundColor: Color.fromARGB(255, 243, 249, 252),
       appBar: AppBar(
         leading: kBackButton(context),
         title: kAppbarTitle(context, title: 'Search'),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            searchBar(),
-            height10,
-            Text(
-              'Products found (${searchedProductList.length})',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                searchBar(),
+                height10,
+                searchedProductList.length > 0
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Products found',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          width10,
+                          Container(
+                            alignment: Alignment.center,
+                            constraints: BoxConstraints(
+                              minWidth: sdp(context, 23),
+                              minHeight: sdp(context, 20),
+                            ),
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: primaryColor),
+                            child: FittedBox(
+                              child: Text(
+                                '${searchedProductList.length}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : SizedBox(),
+                height20,
+                searchedProductList.length > 0
+                    ? ListView.builder(
+                        itemCount: searchedProductList.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return productListTile(
+                              context, searchedProductList[index]);
+                        },
+                      )
+                    : Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Opacity(
+                              opacity: 0.5,
+                              child: SvgPicture.asset(
+                                'lib/assets/icons/search-medicines.svg',
+                                height: sdp(context, 200),
+                              ),
+                            ),
+                            height20,
+                            Text(
+                              "Search medicines",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: sdp(context, 16),
+                                color: Colors.blueGrey.shade200,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+              ],
             ),
-            height20,
-            ListView.builder(
-              itemCount: searchedProductList.length,
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return productListTile(context, searchedProductList[index]);
-              },
-            ),
-          ],
-        ),
+          ),
+          Visibility(
+            visible: isLoading,
+            child: fullScreenLoading(context),
+          ),
+        ],
       ),
     );
   }
@@ -76,6 +144,7 @@ class _ProductsUIState extends State<ProductsUI> {
       padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
         color: Colors.white,
+        border: Border.all(color: Colors.grey.shade400),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -93,9 +162,6 @@ class _ProductsUIState extends State<ProductsUI> {
             child: TextField(
               controller: searchKey,
               autofocus: true,
-              onSubmitted: (val) {
-                searchProduct(val);
-              },
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Search medicines',
@@ -104,6 +170,13 @@ class _ProductsUIState extends State<ProductsUI> {
                 ),
               ),
             ),
+          ),
+          width10,
+          TextButton(
+            onPressed: () {
+              searchProduct(searchKey.text);
+            },
+            child: Text('Search'),
           ),
         ],
       ),

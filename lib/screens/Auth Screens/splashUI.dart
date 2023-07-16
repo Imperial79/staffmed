@@ -1,5 +1,5 @@
+import 'package:apollo/screens/Auth%20Screens/loginUI.dart';
 import 'package:apollo/screens/dashboardUI.dart';
-import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/sdp.dart';
@@ -46,7 +46,7 @@ class _SplashUIState extends State<SplashUI> {
     if (userBox.get('phone') != null && userBox.get('password') != null) {
       reLogin(userBox.get('phone'), userBox.get('password'));
     } else {
-      navPushReplacement(context, WelcomeUI());
+      navPushReplacement(context, LoginUI());
     }
   }
 

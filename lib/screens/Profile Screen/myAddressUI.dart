@@ -200,6 +200,7 @@ class _MyAddresUIState extends State<MyAddresUI> {
         kTextField(context,
             controller: pincode,
             hintText: 'eg., 713201',
+            maxLength: 6,
             keyboardType: TextInputType.number),
         height20,
         Text('House number, floor, building name, locality'),

@@ -1,8 +1,8 @@
+import 'package:apollo/screens/Auth%20Screens/loginUI.dart';
 import 'package:apollo/screens/Profile%20Screen/aboutusUI.dart';
 import 'package:apollo/screens/Profile%20Screen/myAddressUI.dart';
 import 'package:apollo/screens/Profile%20Screen/ordersUI.dart';
 import 'package:apollo/screens/Profile%20Screen/presOrdersUI.dart';
-import 'package:apollo/screens/welcomeUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
 import 'package:apollo/utils/constants.dart';
@@ -142,9 +142,13 @@ class _ProfileUIState extends State<ProfileUI> {
         ElevatedButton(
           onPressed: () async {
             await Hive.deleteBoxFromDisk('userData');
-            Box userbox = await Hive.openBox('userData');
-            print(userbox.get('phone'));
-            navPopUntilPush(context, WelcomeUI());
+            cartProducts = [];
+            cartProductIds = [];
+            searchedProductList = [];
+            stockMap = {};
+            orderHistoryList = [];
+            presOrderHistoryList = [];
+            navPopUntilPush(context, LoginUI());
           },
           child: Text('Yes'),
         ),

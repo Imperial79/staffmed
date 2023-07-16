@@ -153,9 +153,11 @@ Container fullScreenLoading(BuildContext context) {
     width: double.infinity,
     alignment: Alignment.center,
     color: Colors.white.withOpacity(0.7),
-    child: Lottie.asset(
-      'lib/assets/icons/loading-animation.json',
-      height: sdp(context, 100),
+    child: Transform.scale(
+      scale: 0.5,
+      child: Lottie.asset(
+        'lib/assets/icons/loading-animation.json',
+      ),
     ),
   );
 }

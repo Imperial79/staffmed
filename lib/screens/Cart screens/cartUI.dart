@@ -226,19 +226,19 @@ class _CartUIState extends State<CartUI> {
                       ],
                     ),
                   ),
-                  height10,
-                  Divider(),
-                  height10,
-                  UserData.addresses.isNotEmpty
-                      ? deliveryAddress(context)
-                      : KOutlinedButton.expanded(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => MyAddresUI()));
-                          },
-                          label: 'Add Address'),
+                  // height10,
+                  // Divider(),
+                  // height10,
+                  // UserData.addresses.isNotEmpty
+                  //     ? deliveryAddress(context)
+                  //     : KOutlinedButton.expanded(
+                  //         onPressed: () {
+                  //           Navigator.push(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) => MyAddresUI()));
+                  //         },
+                  //         label: 'Add Address'),
                 ],
               ),
             ),
@@ -290,16 +290,16 @@ class _CartUIState extends State<CartUI> {
                     width10,
                     ElevatedButton(
                       onPressed: () {
-                        if (UserData.addresses.isEmpty) {
-                          ShowSnackBar(context,
-                              content: 'Please add an address first!');
-                        } else {
-                          navPush(
-                            context,
-                            ordersCheckoutUI(
-                                totalPayable: totalPayable.toStringAsFixed(2)),
-                          );
-                        }
+                        // if (UserData.addresses.isEmpty) {
+                        //   ShowSnackBar(context,
+                        //       content: 'Please add an address first!');
+                        // } else {
+                        navPush(
+                          context,
+                          ordersCheckoutUI(
+                              totalPayable: totalPayable.toStringAsFixed(2)),
+                        );
+                        // }
                       },
                       child: Text('Continue'),
                     ),

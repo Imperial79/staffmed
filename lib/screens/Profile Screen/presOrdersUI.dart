@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -55,7 +53,7 @@ class _PresOrdersUIState extends State<PresOrdersUI> {
         leading: kBackButton(context),
         title: kAppbarTitle(
           context,
-          title: 'My Orders',
+          title: 'Prescription Orders',
         ),
       ),
       body: Stack(
@@ -207,15 +205,15 @@ class _PresOrdersUIState extends State<PresOrdersUI> {
             Row(
               children: [
                 Expanded(
-                    child: KOutlinedButton.expanded(
-                        onPressed: () async {
-                          final pdfFile = await PdfInvoiceApi.generate(
-                            {},
-                          );
-                          PdfInvoiceApi.openFile(pdfFile);
-                        },
-                        label: 'Invoice')),
-                data['isPaid'] == 'Pending'
+                  child: KOutlinedButton.expanded(
+                    onPressed: () async {
+                      final pdfFile = await PdfInvoiceApi.generate(data);
+                      PdfInvoiceApi.openFile(pdfFile);
+                    },
+                    label: 'Invoice',
+                  ),
+                ),
+                data['isPaid'] == 'Pending' && double.parse(data['amount']) > 0
                     ? Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(

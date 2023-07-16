@@ -15,9 +15,16 @@ class UserData {
   static List<dynamic> addresses = [];
 }
 
-String appVersion = '1.0.2';
+String appVersion = '1.0.3';
 
 int defaultAddress = 0;
+List<int> timeSlots = [
+  6,
+  10,
+  14,
+  18,
+  22,
+];
 
 List<dynamic> cartProducts = [];
 List<dynamic> cartProductIds = [];

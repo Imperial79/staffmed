@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:apollo/screens/Cart%20screens/paymentUI.dart';
 import 'package:apollo/utils/colors.dart';
 import 'package:apollo/utils/components.dart';
@@ -7,6 +5,8 @@ import 'package:apollo/utils/constants.dart';
 import 'package:apollo/utils/sdp.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../PdfApi/pdf_invoice_api.dart';
 
 class OrdersUI extends StatefulWidget {
   const OrdersUI({super.key});
@@ -129,14 +129,14 @@ class _OrdersUIState extends State<OrdersUI> {
             ),
             height10,
             ListView.builder(
-              itemCount: data['orderedProducts'].length > 2 &&
+              itemCount: data['medicines'].length > 2 &&
                       !seeAllList.contains(data['id'])
                   ? 2
-                  : data['orderedProducts'].length,
+                  : data['medicines'].length,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return orderedProductTile(data['orderedProducts'][index]);
+                return orderedProductTile(data['medicines'][index]);
               },
             ),
             Align(
@@ -207,16 +207,20 @@ class _OrdersUIState extends State<OrdersUI> {
               children: [
                 Expanded(
                     child: KOutlinedButton.expanded(
-                        onPressed: () {}, label: 'Invoice')),
-                data['isPaid'] == 'Pending'
+                        onPressed: () async {
+                          final pdfFile = await PdfInvoiceApi.generate(data);
+                          PdfInvoiceApi.openFile(pdfFile);
+                        },
+                        label: 'Invoice')),
+                data['isPaid'] == 'Pending' && double.parse(data['amount']) > 0
                     ? Padding(
                         padding: EdgeInsets.only(left: 10.0),
                         child: ElevatedButton(
-                            onPressed: () {
-                              navPush(
-                                  context, PaymentUI(orderId: data['refId']));
-                            },
-                            child: Text('Pay now')),
+                          onPressed: () {
+                            navPush(context, PaymentUI(orderId: data['refId']));
+                          },
+                          child: Text('Pay now'),
+                        ),
                       )
                     : SizedBox(),
               ],
