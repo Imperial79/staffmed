@@ -206,12 +206,17 @@ class _OrdersUIState extends State<OrdersUI> {
             Row(
               children: [
                 Expanded(
+                  child: Visibility(
+                    visible: data['status'].toLowerCase() == 'delivered',
                     child: KOutlinedButton.expanded(
-                        onPressed: () async {
-                          final pdfFile = await PdfInvoiceApi.generate(data);
-                          PdfInvoiceApi.openFile(pdfFile);
-                        },
-                        label: 'Invoice')),
+                      onPressed: () async {
+                        final pdfFile = await PdfInvoiceApi.generate(data);
+                        PdfInvoiceApi.openFile(pdfFile);
+                      },
+                      label: 'Invoice',
+                    ),
+                  ),
+                ),
                 data['isPaid'] == 'Pending' && double.parse(data['amount']) > 0
                     ? Padding(
                         padding: EdgeInsets.only(left: 10.0),

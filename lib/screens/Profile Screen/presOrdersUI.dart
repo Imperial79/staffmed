@@ -205,12 +205,15 @@ class _PresOrdersUIState extends State<PresOrdersUI> {
             Row(
               children: [
                 Expanded(
-                  child: KOutlinedButton.expanded(
-                    onPressed: () async {
-                      final pdfFile = await PdfInvoiceApi.generate(data);
-                      PdfInvoiceApi.openFile(pdfFile);
-                    },
-                    label: 'Invoice',
+                  child: Visibility(
+                    visible: data['status'].toLowerCase() == 'delivered',
+                    child: KOutlinedButton.expanded(
+                      onPressed: () async {
+                        final pdfFile = await PdfInvoiceApi.generate(data);
+                        PdfInvoiceApi.openFile(pdfFile);
+                      },
+                      label: 'Invoice',
+                    ),
                   ),
                 ),
                 data['isPaid'] == 'Pending' && double.parse(data['amount']) > 0

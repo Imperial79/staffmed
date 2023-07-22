@@ -24,6 +24,16 @@ class _HomeUIState extends State<HomeUI> {
   void initState() {
     super.initState();
     fetchPopularMedicines();
+    fetchBanners();
+  }
+
+  fetchBanners() async {
+    var dataResult = await ApiCallback(uri: '/banners/fetch.php');
+
+    if (!dataResult['error']) {
+      bannersList = dataResult['response'];
+      setState(() {});
+    }
   }
 
   fetchPopularMedicines() async {

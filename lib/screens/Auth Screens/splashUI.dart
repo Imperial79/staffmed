@@ -21,14 +21,14 @@ class _SplashUIState extends State<SplashUI> {
     validate();
   }
 
-  fetchBanners() async {
-    var dataResult = await ApiCallback(uri: '/banners/fetch.php');
+  // fetchBanners() async {
+  //   var dataResult = await ApiCallback(uri: '/banners/fetch.php');
 
-    if (!dataResult['error']) {
-      bannersList = dataResult['response'];
-      setState(() {});
-    }
-  }
+  //   if (!dataResult['error']) {
+  //     bannersList = dataResult['response'];
+  //     setState(() {});
+  //   }
+  // }
 
   fetchCartItems() async {
     var dataResult = await ApiCallback(
@@ -37,6 +37,12 @@ class _SplashUIState extends State<SplashUI> {
     if (!dataResult['error']) {
       cartProducts = dataResult['response'];
       cartProductIds = dataResult['idsArray'];
+
+      cartProductIds.forEach((element) {
+        if (!stockMap.containsKey(element)) {
+          stockMap[element] = 1;
+        }
+      });
     }
   }
 
@@ -71,7 +77,7 @@ class _SplashUIState extends State<SplashUI> {
         UserData.addresses = userData['addresses'];
       });
       await fetchCartItems();
-      await fetchBanners();
+      // await fetchBanners();
       navPushReplacement(context, DashboardUI());
 
       ShowSnackBar(
